@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Functions — In-Depth Lecture</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@300;400;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0D1117;
+    --surface:   #161B22;
+    --border:    #21262D;
+    --accent:    #58A6FF;
+    --accent2:   #3FB950;
+    --accent3:   #FF7B72;
+    --accent4:   #D2A8FF;
+    --muted:     #8B949E;
+    --text:      #E6EDF3;
+    --text-dim:  #C9D1D9;
+    --tag-bg:    #1F2937;
+
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Sora', sans-serif;
+    --serif: 'Instrument Serif', serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  /* ── SIDEBAR NAV ── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 240px;
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 28px 0;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-logo span {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-logo h2 {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text);
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 20px 4px;
+  }
+
+  .sidebar a {
+    display: block;
+    padding: 6px 20px;
+    font-size: 13px;
+    color: var(--text-dim);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all .15s;
+  }
+
+  .sidebar a:hover, .sidebar a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(88,166,255,.06);
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    margin-left: 240px;
+    max-width: 860px;
+    padding: 60px 56px 120px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding-bottom: 56px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 64px;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 56px);
+    font-style: italic;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.8;
+  }
+
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 28px;
+  }
+
+  .pill {
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--text-dim);
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    margin-bottom: 72px;
+    scroll-margin-top: 40px;
+  }
+
+  .section-eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 10px;
+  }
+
+  .section h2 {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-style: italic;
+    color: var(--text);
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+
+  .section h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 32px 0 10px;
+  }
+
+  .section p {
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    font-size: 15px;
+  }
+
+  /* ── CODE BLOCKS ── */
+  .code-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0 28px;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,.02);
+  }
+
+  .code-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #FF5F57; }
+  .dot-y { background: #FFBD2E; }
+  .dot-g { background: #28C840; }
+
+  .code-filename {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .code-lang {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    background: rgba(88,166,255,.12);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13.5px;
+    line-height: 1.7;
+    tab-size: 4;
+  }
+
+  /* Syntax colors */
+  .kw  { color: #FF7B72; }   /* keywords */
+  .fn  { color: #D2A8FF; }   /* function names */
+  .st  { color: #A5D6FF; }   /* strings */
+  .cm  { color: #8B949E; font-style: italic; } /* comments */
+  .nb  { color: #58A6FF; }   /* builtins / numbers */
+  .op  { color: #E6EDF3; }   /* operators */
+  .cl  { color: #FFA657; }   /* class names */
+  .dc  { color: #3FB950; font-style: italic; } /* docstrings */
+
+  /* ── REAL LIFE PROBLEM CARDS ── */
+  .problem-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 24px 0;
+  }
+
+  .problem-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .problem-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .problem-meta { flex: 1; }
+
+  .problem-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent3);
+    margin-bottom: 4px;
+  }
+
+  .problem-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .problem-body {
+    padding: 20px 24px 0;
+    background: var(--bg);
+  }
+
+  .problem-body p {
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: rgba(88,166,255,.05);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+
+  .callout.green  { border-left-color: var(--accent2); background: rgba(63,185,80,.05); }
+  .callout.orange { border-left-color: #FFA657; background: rgba(255,166,87,.05); }
+  .callout.purple { border-left-color: var(--accent4); background: rgba(210,168,255,.05); }
+
+  .callout strong { color: var(--text); }
+
+  /* ── CONCEPT TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 20px 0;
+  }
+
+  th {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(33,38,45,.6);
+    color: var(--text-dim);
+    vertical-align: top;
+  }
+
+  td:first-child { color: var(--accent4); font-family: var(--mono); font-size: 13px; }
+
+  tr:last-child td { border-bottom: none; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  /* ── QUIZ SECTION ── */
+  .quiz-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+  }
+
+  .quiz-q {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .quiz-options { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+  .quiz-options li {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-family: var(--mono);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: border-color .15s, color .15s;
+  }
+
+  .quiz-options li:hover { border-color: var(--accent); color: var(--accent); }
+  .quiz-options li.correct { border-color: var(--accent2); color: var(--accent2); background: rgba(63,185,80,.06); }
+  .quiz-options li.wrong   { border-color: var(--accent3); color: var(--accent3); background: rgba(255,123,114,.06); }
+
+  .quiz-feedback {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    display: none;
+  }
+
+  /* ── TOC PROGRESS BAR ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--accent);
+    z-index: 200;
+    transition: width .1s;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 760px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 32px 20px 80px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <span>Python Lecture</span>
+    <h2>Functions &amp; Their Uses</h2>
+  </div>
+
+  <div class="nav-section-label">Fundamentals</div>
+  <a href="#intro">Introduction</a>
+  <a href="#syntax">Defining Functions</a>
+  <a href="#parameters">Parameters &amp; Arguments</a>
+  <a href="#return">Return Values</a>
+
+  <div class="nav-section-label">Advanced Concepts</div>
+  <a href="#scope">Scope &amp; Namespaces</a>
+  <a href="#lambda">Lambda Functions</a>
+  <a href="#decorators">Decorators</a>
+  <a href="#recursion">Recursion</a>
+  <a href="#generators">Generators</a>
+  <a href="#builtins">Built-in Functions</a>
+  <a href="#map">↳ map()</a>
+  <a href="#filter">↳ filter()</a>
+  <a href="#sorted">↳ sorted()</a>
+
+  <div class="nav-section-label">Real-World</div>
+  <a href="#problems">Real-Life Problems</a>
+  <a href="#bestpractices">Best Practices</a>
+  <a href="#quiz">Quick Quiz</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-eyebrow">Computer Science · Python</div>
+    <h1>Functions &amp; Their Uses in Python</h1>
+    <p class="hero-sub">A comprehensive lecture covering the theory, mechanics, and real-world application of Python functions — from basic definitions to advanced patterns used in production software.</p>
+    <div class="pill-row">
+      <span class="pill">def &amp; return</span>
+      <span class="pill">*args / **kwargs</span>
+      <span class="pill">lambda</span>
+      <span class="pill">decorators</span>
+      <span class="pill">recursion</span>
+      <span class="pill">generators</span>
+      <span class="pill">scope</span>
+    </div>
+  </header>
+
+  <!-- 1. INTRODUCTION -->
+  <section class="section" id="intro">
+    <div class="section-eyebrow">Section 01</div>
+    <h2>What is a Function?</h2>
+    <p>A <strong>function</strong> is a named, reusable block of code that performs a specific task. Instead of repeating the same logic in multiple places, you write it once and call it by name wherever needed. Functions are the primary building block of modular, maintainable programs.</p>
+    <p>Think of a function like a coffee machine: you put in beans (input), it performs a process, and you get coffee (output). You don't need to understand the internal mechanism every time — you just press the button.</p>
+
+    <div class="callout">
+      <strong>Why functions matter:</strong> Code without functions quickly becomes a "wall of text" — hard to read, debug, and modify. Functions enforce the DRY principle: <em>Don't Repeat Yourself</em>.
+    </div>
+
+    <h3>Core Benefits</h3>
+    <table>
+      <tr><th>Benefit</th><th>Explanation</th></tr>
+      <tr><td>Reusability</td><td>Write once, use many times — no copy-paste errors.</td></tr>
+      <tr><td>Modularity</td><td>Break a large problem into small, solvable pieces.</td></tr>
+      <tr><td>Readability</td><td>A well-named function makes code read like English prose.</td></tr>
+      <tr><td>Testability</td><td>Isolated logic is far easier to unit-test.</td></tr>
+      <tr><td>Abstraction</td><td>Hide complexity — callers don't care about internals.</td></tr>
+    </table>
+  </section>
+
+  <!-- 2. DEFINING FUNCTIONS -->
+  <section class="section" id="syntax">
+    <div class="section-eyebrow">Section 02</div>
+    <h2>Defining Functions</h2>
+    <p>Python uses the <code style="color:var(--accent4);font-family:var(--mono)">def</code> keyword to declare a function, followed by the name, parentheses, a colon, and an indented body.</p>
+
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+          <span class="code-filename">basic_function.py</span>
+        </div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># Anatomy of a Python function</span>
+
+<span class="kw">def</span> <span class="fn">greet</span>(name):
+    <span class="dc">"""Return a greeting message for the given name."""</span>
+    message = <span class="st">f"Hello, {name}! Welcome to Python."</span>
+    <span class="kw">return</span> message
+
+<span class="cm"># Calling the function</span>
+result = <span class="fn">greet</span>(<span class="st">"Alice"</span>)
+<span class="fn">print</span>(result)   <span class="cm"># Hello, Alice! Welcome to Python.</span></pre>
+    </div>
+
+    <h3>Anatomy Breakdown</h3>
+    <table>
+      <tr><th>Part</th><th>Purpose</th></tr>
+      <tr><td>def</td><td>Keyword that signals Python: "I'm defining a function."</td></tr>
+      <tr><td>greet</td><td>The function name — descriptive, lowercase, snake_case.</td></tr>
+      <tr><td>(name)</td><td>Parameter list — inputs the function accepts.</td></tr>
+      <tr><td>"""..."""</td><td>Docstring — documents what the function does (best practice).</td></tr>
+      <tr><td>body</td><td>Indented block of code that runs when the function is called.</td></tr>
+      <tr><td>return</td><td>Sends a value back to the caller.</td></tr>
+    </table>
+
+    <div class="callout green">
+      <strong>Naming convention:</strong> Python function names should be <code style="color:var(--accent4);font-family:var(--mono)">lowercase_with_underscores</code> (PEP 8). Choose verb-based names: <code style="font-family:var(--mono)">calculate_tax</code>, <code style="font-family:var(--mono)">send_email</code>, <code style="font-family:var(--mono)">get_user</code>.
+    </div>
+  </section>
+
+  <!-- 3. PARAMETERS -->
+  <section class="section" id="parameters">
+    <div class="section-eyebrow">Section 03</div>
+    <h2>Parameters &amp; Arguments</h2>
+    <p>Python offers a rich variety of parameter types, giving functions enormous flexibility.</p>
+
+    <h3>1 — Positional Parameters</h3>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">positional.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">def</span> <span class="fn">add</span>(a, b):
+    <span class="kw">return</span> a + b
+
+<span class="fn">print</span>(<span class="fn">add</span>(<span class="nb">3</span>, <span class="nb">5</span>))   <span class="cm"># 8</span></pre>
+    </div>
+
+    <h3>2 — Default Parameters</h3>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">defaults.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">def</span> <span class="fn">send_email</span>(recipient, subject, cc=<span class="kw">None</span>, priority=<span class="st">"normal"</span>):
+    <span class="dc">"""Send an email — cc and priority have sensible defaults."""</span>
+    <span class="fn">print</span>(<span class="st">f"To: {recipient} | Subject: {subject}"</span>)
+    <span class="fn">print</span>(<span class="st">f"CC: {cc} | Priority: {priority}"</span>)
+
+<span class="fn">send_email</span>(<span class="st">"bob@example.com"</span>, <span class="st">"Meeting Notes"</span>)
+<span class="fn">send_email</span>(<span class="st">"alice@example.com"</span>, <span class="st">"Urgent"</span>, priority=<span class="st">"high"</span>)</pre>
+    </div>
+
+    <h3>3 — *args (Variable Positional)</h3>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">args.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">def</span> <span class="fn">total_bill</span>(*items):
+    <span class="dc">"""Sum any number of item prices."""</span>
+    <span class="kw">return</span> <span class="fn">sum</span>(items)
+
+<span class="fn">print</span>(<span class="fn">total_bill</span>(<span class="nb">12.5</span>, <span class="nb">8.0</span>, <span class="nb">3.75</span>))   <span class="cm"># 24.25</span>
+<span class="fn">print</span>(<span class="fn">total_bill</span>(<span class="nb">100</span>, <span class="nb">200</span>))            <span class="cm"># 300</span></pre>
+    </div>
+
+    <h3>4 — **kwargs (Variable Keyword)</h3>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">kwargs.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">def</span> <span class="fn">create_profile</span>(**details):
+    <span class="dc">"""Build a user profile from keyword arguments."""</span>
+    <span class="kw">for</span> key, value <span class="kw">in</span> details.items():
+        <span class="fn">print</span>(<span class="st">f"  {key}: {value}"</span>)
+
+<span class="fn">create_profile</span>(name=<span class="st">"Jane"</span>, age=<span class="nb">28</span>, city=<span class="st">"Tokyo"</span>, role=<span class="st">"Engineer"</span>)
+<span class="cm"># name: Jane   age: 28   city: Tokyo   role: Engineer</span></pre>
+    </div>
+
+    <div class="callout orange">
+      <strong>Order rule:</strong> Parameters must follow this order — positional → *args → keyword-only → **kwargs. Violating this causes a SyntaxError.
+    </div>
+  </section>
+
+  <!-- 4. RETURN VALUES -->
+  <section class="section" id="return">
+    <div class="section-eyebrow">Section 04</div>
+    <h2>Return Values</h2>
+    <p>The <code style="color:var(--accent4);font-family:var(--mono)">return</code> statement exits a function and optionally sends a value back to the caller. Without it, Python returns <code style="font-family:var(--mono)">None</code> implicitly.</p>
+
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">return_values.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># Returning multiple values (as a tuple)</span>
+<span class="kw">def</span> <span class="fn">min_max</span>(numbers):
+    <span class="dc">"""Return the minimum and maximum of a list."""</span>
+    <span class="kw">return</span> <span class="fn">min</span>(numbers), <span class="fn">max</span>(numbers)
+
+low, high = <span class="fn">min_max</span>([<span class="nb">4</span>, <span class="nb">1</span>, <span class="nb">9</span>, <span class="nb">2</span>, <span class="nb">7</span>])
+<span class="fn">print</span>(<span class="st">f"Min: {low}, Max: {high}"</span>)   <span class="cm"># Min: 1, Max: 9</span>
+
+<span class="cm"># Early return (guard clause pattern)</span>
+<span class="kw">def</span> <span class="fn">divide</span>(a, b):
+    <span class="kw">if</span> b == <span class="nb">0</span>:
+        <span class="kw">return</span> <span class="kw">None</span>  <span class="cm"># early exit</span>
+    <span class="kw">return</span> a / b
+
+<span class="fn">print</span>(<span class="fn">divide</span>(<span class="nb">10</span>, <span class="nb">2</span>))   <span class="cm"># 5.0</span>
+<span class="fn">print</span>(<span class="fn">divide</span>(<span class="nb">10</span>, <span class="nb">0</span>))   <span class="cm"># None</span></pre>
+    </div>
+  </section>
+
+  <!-- 5. SCOPE -->
+  <section class="section" id="scope">
+    <div class="section-eyebrow">Section 05</div>
+    <h2>Scope &amp; Namespaces</h2>
+    <p>Every variable lives in a <strong>scope</strong> — the region of the program where it's visible. Python follows the <strong>LEGB rule</strong> for resolving names.</p>
+
+    <table>
+      <tr><th>Letter</th><th>Scope</th><th>Example</th></tr>
+      <tr><td>L</td><td>Local — inside the current function</td><td>variables defined inside def</td></tr>
+      <tr><td>E</td><td>Enclosing — outer function (closures)</td><td>nested functions</td></tr>
+      <tr><td>G</td><td>Global — module-level</td><td>x = 10 at top of file</td></tr>
+      <tr><td>B</td><td>Built-in — Python's built-ins</td><td>len, print, range</td></tr>
+    </table>
+
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">scope.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre>counter = <span class="nb">0</span>   <span class="cm"># Global scope</span>
+
+<span class="kw">def</span> <span class="fn">increment</span>():
+    <span class="kw">global</span> counter   <span class="cm"># Tell Python we mean the global variable</span>
+    counter += <span class="nb">1</span>
+
+<span class="kw">def</span> <span class="fn">make_multiplier</span>(factor):
+    <span class="cm"># Closure: inner function captures 'factor' from enclosing scope</span>
+    <span class="kw">def</span> <span class="fn">multiply</span>(x):
+        <span class="kw">return</span> x * factor  <span class="cm"># 'factor' is in Enclosing scope</span>
+    <span class="kw">return</span> multiply
+
+double = <span class="fn">make_multiplier</span>(<span class="nb">2</span>)
+triple = <span class="fn">make_multiplier</span>(<span class="nb">3</span>)
+<span class="fn">print</span>(<span class="fn">double</span>(<span class="nb">5</span>))   <span class="cm"># 10</span>
+<span class="fn">print</span>(<span class="fn">triple</span>(<span class="nb">5</span>))   <span class="cm"># 15</span></pre>
+    </div>
+  </section>
+
+  <!-- 6. LAMBDA -->
+  <section class="section" id="lambda">
+    <div class="section-eyebrow">Section 06</div>
+    <h2>Lambda Functions</h2>
+    <p>A <strong>lambda</strong> is an anonymous, single-expression function. It's useful when you need a small function briefly — commonly passed as an argument to <code style="font-family:var(--mono)">map()</code>, <code style="font-family:var(--mono)">filter()</code>, or <code style="font-family:var(--mono)">sorted()</code>.</p>
+
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">lambda_examples.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># Equivalent forms</span>
+<span class="kw">def</span> <span class="fn">square</span>(x): <span class="kw">return</span> x ** <span class="nb">2</span>
+square_lambda = <span class="kw">lambda</span> x: x ** <span class="nb">2</span>
+
+<span class="cm"># Sorting a list of dicts by a key</span>
+students = [
+    {<span class="st">"name"</span>: <span class="st">"Alice"</span>, <span class="st">"grade"</span>: <span class="nb">88</span>},
+    {<span class="st">"name"</span>: <span class="st">"Bob"</span>,   <span class="st">"grade"</span>: <span class="nb">95</span>},
+    {<span class="st">"name"</span>: <span class="st">"Carol"</span>, <span class="st">"grade"</span>: <span class="nb">72</span>},
+]
+ranked = <span class="fn">sorted</span>(students, key=<span class="kw">lambda</span> s: s[<span class="st">"grade"</span>], reverse=<span class="kw">True</span>)
+<span class="kw">for</span> s <span class="kw">in</span> ranked:
+    <span class="fn">print</span>(s[<span class="st">"name"</span>], s[<span class="st">"grade"</span>])   <span class="cm"># Bob 95, Alice 88, Carol 72</span>
+
+<span class="cm"># Filter only even numbers from a list</span>
+nums = [<span class="nb">1</span>, <span class="nb">2</span>, <span class="nb">3</span>, <span class="nb">4</span>, <span class="nb">5</span>, <span class="nb">6</span>]
+evens = <span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> n: n % <span class="nb">2</span> == <span class="nb">0</span>, nums))
+<span class="fn">print</span>(evens)   <span class="cm"># [2, 4, 6]</span></pre>
+    </div>
+
+    <div class="callout">
+      <strong>Rule of thumb:</strong> If a lambda becomes complex (multiple conditions, statements), convert it to a named <code style="font-family:var(--mono)">def</code>. Lambdas are for brevity, not power.
+    </div>
+  </section>
+
+  <!-- 7. DECORATORS -->
+  <section class="section" id="decorators">
+    <div class="section-eyebrow">Section 07</div>
+    <h2>Decorators</h2>
+    <p>A <strong>decorator</strong> is a function that wraps another function, adding behaviour before or after it runs — without modifying the original function's code. This is the "open/closed principle" in action.</p>
+
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">decorator.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">import</span> time
+<span class="kw">import</span> functools
+
+<span class="kw">def</span> <span class="fn">timer</span>(func):
+    <span class="dc">"""Decorator that measures how long a function takes."""</span>
+    <span class="op">@</span><span class="fn">functools.wraps</span>(func)
+    <span class="kw">def</span> <span class="fn">wrapper</span>(*args, **kwargs):
+        start = time.perf_counter()
+        result = <span class="fn">func</span>(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        <span class="fn">print</span>(<span class="st">f"[{func.__name__}] ran in {elapsed:.4f}s"</span>)
+        <span class="kw">return</span> result
+    <span class="kw">return</span> wrapper
+
+<span class="op">@</span><span class="fn">timer</span>
+<span class="kw">def</span> <span class="fn">process_data</span>(n):
+    <span class="kw">return</span> <span class="fn">sum</span>(<span class="fn">range</span>(n))
+
+<span class="fn">process_data</span>(<span class="nb">1_000_000</span>)
+<span class="cm"># [process_data] ran in 0.0231s</span>
+
+<span class="cm"># Common decorators in Python's standard library</span>
+<span class="kw">from</span> functools <span class="kw">import</span> lru_cache
+
+<span class="op">@</span><span class="fn">lru_cache</span>(maxsize=<span class="nb">128</span>)
+<span class="kw">def</span> <span class="fn">fibonacci</span>(n):
+    <span class="kw">if</span> n < <span class="nb">2</span>: <span class="kw">return</span> n
+    <span class="kw">return</span> <span class="fn">fibonacci</span>(n-<span class="nb">1</span>) + <span class="fn">fibonacci</span>(n-<span class="nb">2</span>)</pre>
+    </div>
+
+    <div class="callout purple">
+      <strong>Real use:</strong> Web frameworks like Flask and FastAPI use decorators extensively — <code style="font-family:var(--mono)">@app.route("/home")</code> is a decorator that registers a URL handler.
+    </div>
+  </section>
+
+  <!-- 8. RECURSION -->
+  <section class="section" id="recursion">
+    <div class="section-eyebrow">Section 08</div>
+    <h2>Recursion</h2>
+    <p>A <strong>recursive function</strong> calls itself to solve a smaller version of the same problem. Every recursive solution needs a <em>base case</em> (to stop) and a <em>recursive case</em> (to reduce the problem).</p>
+
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">recursion.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># Classic: Factorial</span>
+<span class="kw">def</span> <span class="fn">factorial</span>(n):
+    <span class="kw">if</span> n == <span class="nb">0</span>:         <span class="cm"># Base case</span>
+        <span class="kw">return</span> <span class="nb">1</span>
+    <span class="kw">return</span> n * <span class="fn">factorial</span>(n - <span class="nb">1</span>)  <span class="cm"># Recursive case</span>
+
+<span class="fn">print</span>(<span class="fn">factorial</span>(<span class="nb">5</span>))   <span class="cm"># 120  (5×4×3×2×1)</span>
+
+<span class="cm"># Real-world: flatten a nested list of any depth</span>
+<span class="kw">def</span> <span class="fn">flatten</span>(lst):
+    result = []
+    <span class="kw">for</span> item <span class="kw">in</span> lst:
+        <span class="kw">if</span> <span class="fn">isinstance</span>(item, <span class="fn">list</span>):
+            result.extend(<span class="fn">flatten</span>(item))  <span class="cm"># Recurse into sub-lists</span>
+        <span class="kw">else</span>:
+            result.append(item)
+    <span class="kw">return</span> result
+
+nested = [<span class="nb">1</span>, [<span class="nb">2</span>, [<span class="nb">3</span>, <span class="nb">4</span>]], [<span class="nb">5</span>, [<span class="nb">6</span>, [<span class="nb">7</span>]]]]
+<span class="fn">print</span>(<span class="fn">flatten</span>(nested))   <span class="cm"># [1, 2, 3, 4, 5, 6, 7]</span></pre>
+    </div>
+
+    <div class="callout orange">
+      <strong>Watch out:</strong> Python's default recursion limit is 1000. For deeply nested problems, prefer iteration or increase the limit with <code style="font-family:var(--mono)">sys.setrecursionlimit()</code>.
+    </div>
+  </section>
+
+  <!-- 9. GENERATORS -->
+  <section class="section" id="generators">
+    <div class="section-eyebrow">Section 09</div>
+    <h2>Generator Functions</h2>
+    <p>A <strong>generator</strong> uses <code style="font-family:var(--mono)">yield</code> instead of <code style="font-family:var(--mono)">return</code>. It produces values one at a time, pausing execution between calls — ideal for large datasets that don't fit in memory.</p>
+
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">generators.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># Reading a huge log file line by line (memory-efficient)</span>
+<span class="kw">def</span> <span class="fn">read_log</span>(filepath):
+    <span class="kw">with</span> <span class="fn">open</span>(filepath) <span class="kw">as</span> f:
+        <span class="kw">for</span> line <span class="kw">in</span> f:
+            <span class="kw">yield</span> line.strip()   <span class="cm"># Yield one line at a time</span>
+
+<span class="cm"># Infinite sequence generator</span>
+<span class="kw">def</span> <span class="fn">counter</span>(start=<span class="nb">0</span>):
+    n = start
+    <span class="kw">while</span> <span class="kw">True</span>:
+        <span class="kw">yield</span> n
+        n += <span class="nb">1</span>
+
+gen = <span class="fn">counter</span>(<span class="nb">10</span>)
+<span class="fn">print</span>(<span class="fn">next</span>(gen))  <span class="cm"># 10</span>
+<span class="fn">print</span>(<span class="fn">next</span>(gen))  <span class="cm"># 11</span>
+<span class="fn">print</span>(<span class="fn">next</span>(gen))  <span class="cm"># 12</span>
+
+<span class="cm"># Generator expression (compact syntax)</span>
+squares = (x**<span class="nb">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nb">1_000_000</span>))  <span class="cm"># No memory cost!</span>
+<span class="fn">print</span>(<span class="fn">next</span>(squares))  <span class="cm"># 0</span></pre>
+    </div>
+  </section>
+
+  <!-- 10. BUILT-INS OVERVIEW -->
+  <section class="section" id="builtins">
+    <div class="section-eyebrow">Section 10</div>
+    <h2>map(), filter() &amp; sorted() — with Lambda</h2>
+    <p>These three built-in functions are the backbone of functional-style Python. They each accept a <strong>function as their first argument</strong> — and that is exactly where <code style="color:var(--accent4);font-family:var(--mono)">lambda</code> shines. Instead of defining a throwaway named function, you write the logic inline.</p>
+
+    <table>
+      <tr><th>Function</th><th>What it does</th><th>Returns</th></tr>
+      <tr><td>map(fn, iter)</td><td>Apply <em>fn</em> to every element — transform each item</td><td>map object (lazy)</td></tr>
+      <tr><td>filter(fn, iter)</td><td>Keep only items where <em>fn</em> returns True — select items</td><td>filter object (lazy)</td></tr>
+      <tr><td>sorted(iter, key, reverse)</td><td>Return a new sorted list — order items by a criterion</td><td>new list</td></tr>
+    </table>
+
+    <div class="callout">
+      <strong>Lazy evaluation:</strong> <code>map()</code> and <code>filter()</code> return iterator objects — they compute nothing until you consume them (e.g. wrap in <code>list()</code> or loop over). <code>sorted()</code> returns a fully materialised list immediately.
+    </div>
+  </section>
+
+  <!-- 10a. MAP -->
+  <section class="section" id="map">
+    <div class="section-eyebrow">Section 10a</div>
+    <h2>map() — Transform Every Element</h2>
+    <p><code style="color:var(--accent4);font-family:var(--mono)">map(function, iterable)</code> applies a function to <em>each</em> element and returns a new iterator of results. Think of it as a conveyor belt: every item passes through the same operation.</p>
+
+    <h3>Syntax</h3>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">map_syntax.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># General form</span>
+result = <span class="fn">list</span>(<span class="fn">map</span>(function, iterable))
+
+<span class="cm"># With a named function</span>
+<span class="kw">def</span> <span class="fn">square</span>(x): <span class="kw">return</span> x ** <span class="nb">2</span>
+<span class="fn">list</span>(<span class="fn">map</span>(square, [<span class="nb">1</span>, <span class="nb">2</span>, <span class="nb">3</span>, <span class="nb">4</span>]))   <span class="cm"># [1, 4, 9, 16]</span>
+
+<span class="cm"># Same thing with lambda (no need to name the function)</span>
+<span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> x: x ** <span class="nb">2</span>, [<span class="nb">1</span>, <span class="nb">2</span>, <span class="nb">3</span>, <span class="nb">4</span>]))   <span class="cm"># [1, 4, 9, 16]</span></pre>
+    </div>
+
+    <h3>Real-Life Example 1 — E-Commerce: Apply Discount to All Prices</h3>
+    <p>A sale event applies a flat 20% discount to every product price in the catalogue.</p>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">map_discount.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre>prices = [<span class="nb">1200</span>, <span class="nb">3500</span>, <span class="nb">850</span>, <span class="nb">4999</span>, <span class="nb">620</span>]
+
+<span class="cm"># Apply 20% discount to every price</span>
+discounted = <span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> p: <span class="fn">round</span>(p * <span class="nb">0.80</span>, <span class="nb">2</span>), prices))
+
+<span class="fn">print</span>(<span class="st">"Original :"</span>, prices)
+<span class="fn">print</span>(<span class="st">"After 20% off:"</span>, discounted)
+<span class="cm"># Original :      [1200, 3500, 850, 4999, 620]</span>
+<span class="cm"># After 20% off:  [960.0, 2800.0, 680.0, 3999.2, 496.0]</span>
+
+<span class="cm"># map() over two iterables simultaneously</span>
+quantities = [<span class="nb">2</span>, <span class="nb">1</span>, <span class="nb">5</span>, <span class="nb">1</span>, <span class="nb">3</span>]
+line_totals = <span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> p, q: p * q, discounted, quantities))
+<span class="fn">print</span>(<span class="st">"Line totals:"</span>, line_totals)
+<span class="cm"># Line totals: [1920.0, 2800.0, 3400.0, 3999.2, 1488.0]</span></pre>
+    </div>
+
+    <h3>Real-Life Example 2 — HR: Normalise Employee Name Formats</h3>
+    <p>An imported CSV has inconsistent name casing. <code>map()</code> cleans every name in one line.</p>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">map_names.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre>raw_names = [<span class="st">"  alice SHARMA "</span>, <span class="st">"BOB mehta"</span>, <span class="st">"CAROL Das  "</span>, <span class="st">"dave ROY"</span>]
+
+<span class="cm"># Strip whitespace and apply title case in one map()</span>
+clean_names = <span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> n: n.strip().title(), raw_names))
+<span class="fn">print</span>(clean_names)
+<span class="cm"># ['Alice Sharma', 'Bob Mehta', 'Carol Das', 'Dave Roy']</span>
+
+<span class="cm"># Convert temperatures: Celsius list → Fahrenheit</span>
+celsius     = [<span class="nb">0</span>, <span class="nb">20</span>, <span class="nb">37</span>, <span class="nb">100</span>]
+fahrenheit  = <span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> c: c * <span class="nb">9</span>/<span class="nb">5</span> + <span class="nb">32</span>, celsius))
+<span class="fn">print</span>(fahrenheit)  <span class="cm"># [32.0, 68.0, 98.6, 212.0]</span></pre>
+    </div>
+
+    <div class="callout">
+      <strong>map() vs list comprehension:</strong> <code>list(map(lambda x: x*2, nums))</code> and <code>[x*2 for x in nums]</code> are equivalent. Use <code>map()</code> when passing an existing named function — <code>map(str, nums)</code> is cleaner than <code>[str(x) for x in nums]</code>. Use comprehensions when the logic is more readable inline.
+    </div>
+  </section>
+
+  <!-- 10b. FILTER -->
+  <section class="section" id="filter">
+    <div class="section-eyebrow">Section 10b</div>
+    <h2>filter() — Keep Only What Passes the Test</h2>
+    <p><code style="color:var(--accent4);font-family:var(--mono)">filter(function, iterable)</code> passes each element through a test function. If the function returns <code>True</code>, the element is kept; if <code>False</code>, it is discarded. The result is a filtered iterator.</p>
+
+    <h3>Syntax</h3>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">filter_syntax.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># General form</span>
+result = <span class="fn">list</span>(<span class="fn">filter</span>(predicate_function, iterable))
+
+<span class="cm"># Named function approach</span>
+<span class="kw">def</span> <span class="fn">is_even</span>(n): <span class="kw">return</span> n % <span class="nb">2</span> == <span class="nb">0</span>
+<span class="fn">list</span>(<span class="fn">filter</span>(is_even, [<span class="nb">1</span>,<span class="nb">2</span>,<span class="nb">3</span>,<span class="nb">4</span>,<span class="nb">5</span>,<span class="nb">6</span>]))   <span class="cm"># [2, 4, 6]</span>
+
+<span class="cm"># Lambda approach — same result, less code</span>
+<span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> n: n % <span class="nb">2</span> == <span class="nb">0</span>, [<span class="nb">1</span>,<span class="nb">2</span>,<span class="nb">3</span>,<span class="nb">4</span>,<span class="nb">5</span>,<span class="nb">6</span>]))   <span class="cm"># [2, 4, 6]</span>
+
+<span class="cm"># filter(None, iter) removes all falsy values automatically</span>
+<span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">None</span>, [<span class="nb">0</span>, <span class="st">""</span>, <span class="nb">3</span>, <span class="kw">None</span>, <span class="st">"hi"</span>, <span class="kw">False</span>, <span class="nb">7</span>]))   <span class="cm"># [3, 'hi', 7]</span></pre>
+    </div>
+
+    <h3>Real-Life Example 1 — Job Portal: Filter Eligible Candidates</h3>
+    <p>A recruitment platform filters applicants who meet minimum experience and age requirements before forwarding to the hiring manager.</p>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">filter_candidates.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre>candidates = [
+    {<span class="st">"name"</span>: <span class="st">"Alice"</span>,  <span class="st">"age"</span>: <span class="nb">28</span>, <span class="st">"experience"</span>: <span class="nb">4</span>},
+    {<span class="st">"name"</span>: <span class="st">"Bob"</span>,    <span class="st">"age"</span>: <span class="nb">21</span>, <span class="st">"experience"</span>: <span class="nb">1</span>},
+    {<span class="st">"name"</span>: <span class="st">"Carol"</span>,  <span class="st">"age"</span>: <span class="nb">35</span>, <span class="st">"experience"</span>: <span class="nb">8</span>},
+    {<span class="st">"name"</span>: <span class="st">"Dave"</span>,   <span class="st">"age"</span>: <span class="nb">19</span>, <span class="st">"experience"</span>: <span class="nb">0</span>},
+    {<span class="st">"name"</span>: <span class="st">"Eve"</span>,    <span class="st">"age"</span>: <span class="nb">30</span>, <span class="st">"experience"</span>: <span class="nb">3</span>},
+]
+
+<span class="cm"># Eligible: age >= 23 AND at least 3 years experience</span>
+eligible = <span class="fn">list</span>(<span class="fn">filter</span>(
+    <span class="kw">lambda</span> c: c[<span class="st">"age"</span>] >= <span class="nb">23</span> <span class="kw">and</span> c[<span class="st">"experience"</span>] >= <span class="nb">3</span>,
+    candidates
+))
+
+<span class="fn">print</span>(<span class="st">"Shortlisted candidates:"</span>)
+<span class="kw">for</span> c <span class="kw">in</span> eligible:
+    <span class="fn">print</span>(<span class="st">f"  {c['name']} | Age: {c['age']} | Exp: {c['experience']} yrs"</span>)
+<span class="cm"># Alice | Age: 28 | Exp: 4 yrs</span>
+<span class="cm"># Carol | Age: 35 | Exp: 8 yrs</span>
+<span class="cm"># Eve   | Age: 30 | Exp: 3 yrs</span></pre>
+    </div>
+
+    <h3>Real-Life Example 2 — Inventory: Flag Low-Stock &amp; Overpriced Items</h3>
+    <p>A warehouse dashboard uses two separate filters to highlight items needing attention.</p>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">filter_inventory.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre>products = [
+    {<span class="st">"name"</span>: <span class="st">"Pen"</span>,      <span class="st">"stock"</span>: <span class="nb">5</span>,   <span class="st">"price"</span>: <span class="nb">15</span>},
+    {<span class="st">"name"</span>: <span class="st">"Notebook"</span>,  <span class="st">"stock"</span>: <span class="nb">120</span>, <span class="st">"price"</span>: <span class="nb">80</span>},
+    {<span class="st">"name"</span>: <span class="st">"Marker"</span>,    <span class="st">"stock"</span>: <span class="nb">8</span>,   <span class="st">"price"</span>: <span class="nb">45</span>},
+    {<span class="st">"name"</span>: <span class="st">"Stapler"</span>,   <span class="st">"stock"</span>: <span class="nb">200</span>, <span class="st">"price"</span>: <span class="nb">350</span>},
+    {<span class="st">"name"</span>: <span class="st">"Eraser"</span>,    <span class="st">"stock"</span>: <span class="nb">3</span>,   <span class="st">"price"</span>: <span class="nb">10</span>},
+]
+
+<span class="cm"># Items with stock below 10 → need reorder</span>
+low_stock = <span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> p: p[<span class="st">"stock"</span>] < <span class="nb">10</span>, products))
+
+<span class="cm"># Items priced above 100 → premium category</span>
+premium = <span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> p: p[<span class="st">"price"</span>] > <span class="nb">100</span>, products))
+
+<span class="fn">print</span>(<span class="st">"⚠ Reorder needed:"</span>, [p[<span class="st">"name"</span>] <span class="kw">for</span> p <span class="kw">in</span> low_stock])
+<span class="cm"># ['Pen', 'Marker', 'Eraser']</span>
+
+<span class="fn">print</span>(<span class="st">"💎 Premium items:"</span>, [p[<span class="st">"name"</span>] <span class="kw">for</span> p <span class="kw">in</span> premium])
+<span class="cm"># ['Stapler']</span>
+
+<span class="cm"># Chaining: low-stock items that are also affordable (price < 50)</span>
+urgent_reorder = <span class="fn">list</span>(<span class="fn">filter</span>(
+    <span class="kw">lambda</span> p: p[<span class="st">"stock"</span>] < <span class="nb">10</span> <span class="kw">and</span> p[<span class="st">"price"</span>] < <span class="nb">50</span>,
+    products
+))
+<span class="fn">print</span>(<span class="st">"🛒 Urgent cheap reorders:"</span>, [p[<span class="st">"name"</span>] <span class="kw">for</span> p <span class="kw">in</span> urgent_reorder])
+<span class="cm"># ['Pen', 'Marker', 'Eraser']</span></pre>
+    </div>
+
+    <div class="callout green">
+      <strong>filter() vs comprehension:</strong> <code>list(filter(lambda x: x > 0, nums))</code> equals <code>[x for x in nums if x > 0]</code>. Use <code>filter()</code> for simple boolean tests on large data; list comprehensions are often more readable for complex conditions.
+    </div>
+  </section>
+
+  <!-- 10c. SORTED -->
+  <section class="section" id="sorted">
+    <div class="section-eyebrow">Section 10c</div>
+    <h2>sorted() — Order by Any Criterion</h2>
+    <p><code style="color:var(--accent4);font-family:var(--mono)">sorted(iterable, key=None, reverse=False)</code> returns a <em>new</em> sorted list without modifying the original. The <code>key</code> parameter accepts any function — and lambda is the natural fit for extracting a sort field on the fly.</p>
+
+    <h3>Syntax</h3>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">sorted_syntax.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># Basic — sorts numbers/strings by default ordering</span>
+<span class="fn">sorted</span>([<span class="nb">3</span>, <span class="nb">1</span>, <span class="nb">4</span>, <span class="nb">1</span>, <span class="nb">5</span>])            <span class="cm"># [1, 1, 3, 4, 5]</span>
+<span class="fn">sorted</span>([<span class="nb">3</span>, <span class="nb">1</span>, <span class="nb">4</span>], reverse=<span class="kw">True</span>)   <span class="cm"># [4, 3, 1]</span>
+
+<span class="cm"># key= accepts any function</span>
+words = [<span class="st">"banana"</span>, <span class="st">"fig"</span>, <span class="st">"apple"</span>, <span class="st">"kiwi"</span>]
+<span class="fn">sorted</span>(words, key=<span class="fn">len</span>)            <span class="cm"># ['fig', 'kiwi', 'apple', 'banana']</span>
+
+<span class="cm"># lambda as key — sort strings by last character</span>
+<span class="fn">sorted</span>(words, key=<span class="kw">lambda</span> w: w[-<span class="nb">1</span>])
+<span class="cm"># ['banana', 'apple', 'fig', 'kiwi']</span>
+
+<span class="cm"># sorted() never modifies the original — .sort() does (in-place, lists only)</span>
+original = [<span class="nb">3</span>, <span class="nb">1</span>, <span class="nb">2</span>]
+new_list = <span class="fn">sorted</span>(original)   <span class="cm"># original is still [3, 1, 2]</span></pre>
+    </div>
+
+    <h3>Real-Life Example 1 — Leaderboard: Rank Players by Score</h3>
+    <p>A gaming app sorts players by score descending, breaking ties by name alphabetically — two-key sorting with a lambda tuple.</p>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">sorted_leaderboard.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre>players = [
+    {<span class="st">"name"</span>: <span class="st">"Zara"</span>,  <span class="st">"score"</span>: <span class="nb">9800</span>, <span class="st">"level"</span>: <span class="nb">12</span>},
+    {<span class="st">"name"</span>: <span class="st">"Aryan"</span>, <span class="st">"score"</span>: <span class="nb">9800</span>, <span class="st">"level"</span>: <span class="nb">15</span>},
+    {<span class="st">"name"</span>: <span class="st">"Meera"</span>, <span class="st">"score"</span>: <span class="nb">7500</span>, <span class="st">"level"</span>: <span class="nb">9</span>},
+    {<span class="st">"name"</span>: <span class="st">"Ravi"</span>,  <span class="st">"score"</span>: <span class="nb">11200</span>,<span class="st">"level"</span>: <span class="nb">18</span>},
+    {<span class="st">"name"</span>: <span class="st">"Sana"</span>,  <span class="st">"score"</span>: <span class="nb">6300</span>, <span class="st">"level"</span>: <span class="nb">7</span>},
+]
+
+<span class="cm"># Sort by score descending; on tie, sort name ascending</span>
+ranked = <span class="fn">sorted</span>(
+    players,
+    key=<span class="kw">lambda</span> p: (-p[<span class="st">"score"</span>], p[<span class="st">"name"</span>])
+)
+
+<span class="fn">print</span>(<span class="st">"🏆 LEADERBOARD"</span>)
+<span class="kw">for</span> rank, p <span class="kw">in</span> <span class="fn">enumerate</span>(ranked, <span class="nb">1</span>):
+    <span class="fn">print</span>(<span class="st">f"  #{rank}  {p['name']:<span class="nb">8</span>} Score: {p['score']:>6}  Level: {p['level']}"</span>)
+
+<span class="cm"># #1  Ravi     Score:  11200  Level: 18</span>
+<span class="cm"># #2  Aryan    Score:   9800  Level: 15   ← tie broken by name A < Z</span>
+<span class="cm"># #3  Zara     Score:   9800  Level: 12</span>
+<span class="cm"># #4  Meera    Score:   7500  Level: 9</span>
+<span class="cm"># #5  Sana     Score:   6300  Level: 7</span></pre>
+    </div>
+
+    <h3>Real-Life Example 2 — E-Commerce: Multi-Key Product Sort</h3>
+    <p>A product listing page lets users sort by price, rating, or name. A single function covers all three modes using <code>sorted()</code> with a lambda key selected at runtime.</p>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">sorted_products.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre>products = [
+    {<span class="st">"name"</span>: <span class="st">"Headphones"</span>, <span class="st">"price"</span>: <span class="nb">2500</span>, <span class="st">"rating"</span>: <span class="nb">4.3</span>},
+    {<span class="st">"name"</span>: <span class="st">"Keyboard"</span>,   <span class="st">"price"</span>: <span class="nb">1800</span>, <span class="st">"rating"</span>: <span class="nb">4.7</span>},
+    {<span class="st">"name"</span>: <span class="st">"Mouse"</span>,      <span class="st">"price"</span>: <span class="nb">950</span>,  <span class="st">"rating"</span>: <span class="nb">4.1</span>},
+    {<span class="st">"name"</span>: <span class="st">"Monitor"</span>,    <span class="st">"price"</span>: <span class="nb">18000</span>,<span class="st">"rating"</span>: <span class="nb">4.6</span>},
+    {<span class="st">"name"</span>: <span class="st">"Webcam"</span>,     <span class="st">"price"</span>: <span class="nb">3200</span>, <span class="st">"rating"</span>: <span class="nb">3.9</span>},
+]
+
+<span class="kw">def</span> <span class="fn">sort_products</span>(product_list, by=<span class="st">"price"</span>, descending=<span class="kw">False</span>):
+    <span class="dc">"""Sort products by any field. key is selected dynamically."""</span>
+    <span class="kw">return</span> <span class="fn">sorted</span>(
+        product_list,
+        key=<span class="kw">lambda</span> p: p[by],   <span class="cm"># 'by' captured from enclosing scope</span>
+        reverse=descending
+    )
+
+<span class="cm"># Price: low to high</span>
+<span class="kw">for</span> p <span class="kw">in</span> <span class="fn">sort_products</span>(products, by=<span class="st">"price"</span>):
+    <span class="fn">print</span>(<span class="st">f"  ¥{p['price']:<span class="nb">6</span>}  {p['name']}"</span>)
+<span class="fn">print</span>()
+
+<span class="cm"># Rating: best first</span>
+<span class="kw">for</span> p <span class="kw">in</span> <span class="fn">sort_products</span>(products, by=<span class="st">"rating"</span>, descending=<span class="kw">True</span>):
+    <span class="fn">print</span>(<span class="st">f"  ⭐{p['rating']}  {p['name']}"</span>)</pre>
+    </div>
+
+    <h3>Real-Life Example 3 — School: Sort Students by Multiple Fields</h3>
+    <p>A class register sorts students first by grade descending, then alphabetically within the same grade.</p>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">sorted_students.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre>students = [
+    {<span class="st">"name"</span>: <span class="st">"Isha"</span>,   <span class="st">"grade"</span>: <span class="nb">88</span>, <span class="st">"subject"</span>: <span class="st">"Maths"</span>},
+    {<span class="st">"name"</span>: <span class="st">"Rohan"</span>,  <span class="st">"grade"</span>: <span class="nb">95</span>, <span class="st">"subject"</span>: <span class="st">"Science"</span>},
+    {<span class="st">"name"</span>: <span class="st">"Ananya"</span>, <span class="st">"grade"</span>: <span class="nb">88</span>, <span class="st">"subject"</span>: <span class="st">"English"</span>},
+    {<span class="st">"name"</span>: <span class="st">"Dev"</span>,    <span class="st">"grade"</span>: <span class="nb">72</span>, <span class="st">"subject"</span>: <span class="st">"Maths"</span>},
+    {<span class="st">"name"</span>: <span class="st">"Tara"</span>,   <span class="st">"grade"</span>: <span class="nb">95</span>, <span class="st">"subject"</span>: <span class="st">"Maths"</span>},
+]
+
+<span class="cm"># Primary: grade high→low   Secondary: name A→Z</span>
+ranked = <span class="fn">sorted</span>(
+    students,
+    key=<span class="kw">lambda</span> s: (-s[<span class="st">"grade"</span>], s[<span class="st">"name"</span>])
+)
+
+<span class="fn">print</span>(<span class="st">f"{'Rank':<span class="nb">6</span>} {'Name':<span class="nb">10</span>} {'Grade':<span class="nb">7</span>} Subject"</span>)
+<span class="fn">print</span>(<span class="st">"─" * <span class="nb">38</span></span>)
+<span class="kw">for</span> i, s <span class="kw">in</span> <span class="fn">enumerate</span>(ranked, <span class="nb">1</span>):
+    <span class="fn">print</span>(<span class="st">f"{i:<span class="nb">6</span>} {s['name']:<span class="nb">10</span>} {s['grade']:<span class="nb">7</span>} {s['subject']}"</span>)
+<span class="cm"># 1  Rohan    95      Science</span>
+<span class="cm"># 2  Tara     95      Maths   ← same grade, T comes after R</span>
+<span class="cm"># 3  Ananya   88      English ← same grade 88, A before I</span>
+<span class="cm"># 4  Isha     88      Maths</span>
+<span class="cm"># 5  Dev      72      Maths</span></pre>
+    </div>
+
+    <div class="callout">
+      <strong>Negative trick for descending numeric sort:</strong> <code>key=lambda x: -x["score"]</code> sorts descending without needing <code>reverse=True</code>. This lets you mix directions in a tuple key — e.g. <code>(-score, name)</code> sorts score high-to-low <em>and</em> name A-to-Z simultaneously.
+    </div>
+
+    <h3>Combining map(), filter() and sorted() — Pipeline Pattern</h3>
+    <p>These three functions compose naturally into a data pipeline — a common pattern in data processing scripts.</p>
+    <div class="code-card">
+      <div class="code-header">
+        <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">pipeline.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># Scenario: process raw sales records</span>
+<span class="cm"># 1. filter  → keep only completed sales</span>
+<span class="cm"># 2. map     → compute total (qty × unit_price) for each</span>
+<span class="cm"># 3. sorted  → rank by total descending</span>
+
+sales = [
+    {<span class="st">"id"</span>: <span class="nb">1</span>, <span class="st">"item"</span>: <span class="st">"Laptop"</span>,  <span class="st">"qty"</span>: <span class="nb">2</span>, <span class="st">"price"</span>: <span class="nb">65000</span>, <span class="st">"status"</span>: <span class="st">"complete"</span>},
+    {<span class="st">"id"</span>: <span class="nb">2</span>, <span class="st">"item"</span>: <span class="st">"Mouse"</span>,   <span class="st">"qty"</span>: <span class="nb">5</span>, <span class="st">"price"</span>: <span class="nb">950</span>,  <span class="st">"status"</span>: <span class="st">"pending"</span>},
+    {<span class="st">"id"</span>: <span class="nb">3</span>, <span class="st">"item"</span>: <span class="st">"Monitor"</span>, <span class="st">"qty"</span>: <span class="nb">3</span>, <span class="st">"price"</span>: <span class="nb">18000</span>, <span class="st">"status"</span>: <span class="st">"complete"</span>},
+    {<span class="st">"id"</span>: <span class="nb">4</span>, <span class="st">"item"</span>: <span class="st">"Webcam"</span>,  <span class="st">"qty"</span>: <span class="nb">1</span>, <span class="st">"price"</span>: <span class="nb">3200</span>, <span class="st">"status"</span>: <span class="st">"cancelled"</span>},
+    {<span class="st">"id"</span>: <span class="nb">5</span>, <span class="st">"item"</span>: <span class="st">"Keyboard"</span>,<span class="st">"qty"</span>: <span class="nb">4</span>, <span class="st">"price"</span>: <span class="nb">1800</span>, <span class="st">"status"</span>: <span class="st">"complete"</span>},
+]
+
+<span class="cm"># Step 1 — filter: completed only</span>
+completed = <span class="fn">filter</span>(<span class="kw">lambda</span> s: s[<span class="st">"status"</span>] == <span class="st">"complete"</span>, sales)
+
+<span class="cm"># Step 2 — map: add a "total" field to each record</span>
+with_totals = <span class="fn">map</span>(
+    <span class="kw">lambda</span> s: {**s, <span class="st">"total"</span>: s[<span class="st">"qty"</span>] * s[<span class="st">"price"</span>]},
+    completed
+)
+
+<span class="cm"># Step 3 — sorted: highest total first</span>
+report = <span class="fn">sorted</span>(with_totals, key=<span class="kw">lambda</span> s: s[<span class="st">"total"</span>], reverse=<span class="kw">True</span>)
+
+<span class="fn">print</span>(<span class="st">f"{'Item':<span class="nb">12</span>} {'Qty':<span class="nb">5</span>} {'Unit':<span class="nb">8</span>} {'Total'}"</span>)
+<span class="fn">print</span>(<span class="st">"─" * <span class="nb">38</span></span>)
+<span class="kw">for</span> s <span class="kw">in</span> report:
+    <span class="fn">print</span>(<span class="st">f"{s['item']:<span class="nb">12</span>} {s['qty']:<span class="nb">5</span>} ¥{s['price']:<span class="nb">7</span>} ¥{s['total']}"</span>)
+<span class="cm"># Laptop       2     ¥65000  ¥130000</span>
+<span class="cm"># Monitor      3     ¥18000  ¥54000</span>
+<span class="cm"># Keyboard     4     ¥1800   ¥7200</span></pre>
+    </div>
+
+    <div class="callout green">
+      <strong>Key insight — pipeline composability:</strong> <code>filter()</code>, <code>map()</code>, and <code>sorted()</code> each accept an iterable and return one — so the output of one flows directly into the next. This is the functional programming style: no intermediate lists, no mutation, pure data transformation.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 11. REAL LIFE PROBLEMS -->
+  <section class="section" id="problems">
+    <div class="section-eyebrow">Section 11 — Applied</div>
+    <h2>Real-Life Problem Examples</h2>
+    <p>Let's build functions that solve genuine, everyday problems you'd encounter in industry.</p>
+
+    <!-- PROBLEM 1 -->
+    <div class="problem-card">
+      <div class="problem-header">
+        <div class="problem-icon">🏦</div>
+        <div class="problem-meta">
+          <div class="problem-tag">Finance / Banking</div>
+          <div class="problem-title">EMI Calculator for a Loan</div>
+        </div>
+      </div>
+      <div class="problem-body">
+        <p>Banks use this formula every time someone applies for a loan. Given principal, annual interest rate, and tenure in months — compute the monthly EMI (Equated Monthly Instalment).</p>
+        <div class="code-card">
+          <div class="code-header">
+            <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">emi_calculator.py</span></div>
+            <span class="code-lang">Python</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">calculate_emi</span>(principal: <span class="fn">float</span>, annual_rate: <span class="fn">float</span>, months: <span class="fn">int</span>) -> <span class="fn">float</span>:
+    <span class="dc">"""
+    Calculate the monthly EMI for a loan.
+
+    Args:
+        principal:    Loan amount in currency units
+        annual_rate:  Annual interest rate as a percentage (e.g. 8.5)
+        months:       Loan tenure in months
+
+    Returns:
+        Monthly EMI amount, rounded to 2 decimal places
+    """</span>
+    r = (annual_rate / <span class="nb">100</span>) / <span class="nb">12</span>   <span class="cm"># Monthly interest rate</span>
+    <span class="kw">if</span> r == <span class="nb">0</span>:                      <span class="cm"># Zero-interest loan edge case</span>
+        <span class="kw">return</span> <span class="fn">round</span>(principal / months, <span class="nb">2</span>)
+    emi = principal * r * (<span class="nb">1</span> + r)**months / ((<span class="nb">1</span> + r)**months - <span class="nb">1</span>)
+    <span class="kw">return</span> <span class="fn">round</span>(emi, <span class="nb">2</span>)
+
+<span class="kw">def</span> <span class="fn">loan_summary</span>(principal, annual_rate, months):
+    <span class="dc">"""Print a full loan repayment summary."""</span>
+    emi  = <span class="fn">calculate_emi</span>(principal, annual_rate, months)
+    total_paid     = <span class="fn">round</span>(emi * months, <span class="nb">2</span>)
+    total_interest = <span class="fn">round</span>(total_paid - principal, <span class="nb">2</span>)
+
+    <span class="fn">print</span>(<span class="st">f"── Loan Summary ──────────────────"</span>)
+    <span class="fn">print</span>(<span class="st">f"Principal:       ₹{principal:>12,.2f}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Annual Rate:     {annual_rate}%"</span>)
+    <span class="fn">print</span>(<span class="st">f"Tenure:          {months} months ({months//12} years)"</span>)
+    <span class="fn">print</span>(<span class="st">f"Monthly EMI:     ₹{emi:>12,.2f}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Total Paid:      ₹{total_paid:>12,.2f}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Total Interest:  ₹{total_interest:>12,.2f}"</span>)
+
+<span class="fn">loan_summary</span>(<span class="nb">500_000</span>, <span class="nb">8.5</span>, <span class="nb">60</span>)
+<span class="cm"># Monthly EMI: ₹10,228.17  |  Total Interest: ₹113,690.20</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROBLEM 2 -->
+    <div class="problem-card">
+      <div class="problem-header">
+        <div class="problem-icon">🛒</div>
+        <div class="problem-meta">
+          <div class="problem-tag">E-Commerce / Retail</div>
+          <div class="problem-title">Shopping Cart with Discount Engine</div>
+        </div>
+      </div>
+      <div class="problem-body">
+        <p>E-commerce platforms apply multiple discount rules (coupons, bulk discounts, loyalty tiers). Functions keep each rule isolated and composable.</p>
+        <div class="code-card">
+          <div class="code-header">
+            <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">cart.py</span></div>
+            <span class="code-lang">Python</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">calculate_subtotal</span>(cart: <span class="fn">list</span>) -> <span class="fn">float</span>:
+    <span class="kw">return</span> <span class="fn">sum</span>(item[<span class="st">"price"</span>] * item[<span class="st">"qty"</span>] <span class="kw">for</span> item <span class="kw">in</span> cart)
+
+<span class="kw">def</span> <span class="fn">apply_coupon</span>(subtotal: <span class="fn">float</span>, code: <span class="fn">str</span>) -> <span class="fn">float</span>:
+    coupons = {<span class="st">"SAVE10"</span>: <span class="nb">0.10</span>, <span class="st">"SAVE20"</span>: <span class="nb">0.20</span>, <span class="st">"WELCOME"</span>: <span class="nb">0.15</span>}
+    discount = coupons.get(code.upper(), <span class="nb">0</span>)
+    <span class="kw">return</span> subtotal * (<span class="nb">1</span> - discount)
+
+<span class="kw">def</span> <span class="fn">apply_bulk_discount</span>(subtotal: <span class="fn">float</span>) -> <span class="fn">float</span>:
+    <span class="cm"># 5% off orders over ₹2000</span>
+    <span class="kw">return</span> subtotal * <span class="nb">0.95</span> <span class="kw">if</span> subtotal > <span class="nb">2000</span> <span class="kw">else</span> subtotal
+
+<span class="kw">def</span> <span class="fn">add_tax</span>(amount: <span class="fn">float</span>, rate: <span class="fn">float</span> = <span class="nb">0.18</span>) -> <span class="fn">float</span>:
+    <span class="kw">return</span> <span class="fn">round</span>(amount * (<span class="nb">1</span> + rate), <span class="nb">2</span>)
+
+<span class="kw">def</span> <span class="fn">checkout</span>(cart, coupon=<span class="st">""</span>):
+    <span class="dc">"""Run the full checkout pipeline."""</span>
+    subtotal = <span class="fn">calculate_subtotal</span>(cart)
+    after_coupon = <span class="fn">apply_coupon</span>(subtotal, coupon)
+    after_bulk   = <span class="fn">apply_bulk_discount</span>(after_coupon)
+    total        = <span class="fn">add_tax</span>(after_bulk)
+    <span class="fn">print</span>(<span class="st">f"Subtotal: ₹{subtotal:.2f} → Final (incl. GST): ₹{total:.2f}"</span>)
+    <span class="kw">return</span> total
+
+cart = [
+    {<span class="st">"name"</span>: <span class="st">"Headphones"</span>, <span class="st">"price"</span>: <span class="nb">1500</span>, <span class="st">"qty"</span>: <span class="nb">1</span>},
+    {<span class="st">"name"</span>: <span class="st">"USB Cable"</span>,   <span class="st">"price"</span>: <span class="nb">250</span>,  <span class="st">"qty"</span>: <span class="nb">2</span>},
+]
+<span class="fn">checkout</span>(cart, coupon=<span class="st">"SAVE10"</span>)
+<span class="cm"># Subtotal: ₹2000.00 → Final (incl. GST): ₹2239.20</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROBLEM 3 -->
+    <div class="problem-card">
+      <div class="problem-header">
+        <div class="problem-icon">📊</div>
+        <div class="problem-meta">
+          <div class="problem-tag">Data Science / Analytics</div>
+          <div class="problem-title">Student Grade Analysis System</div>
+        </div>
+      </div>
+      <div class="problem-body">
+        <p>Schools and universities need to process large student datasets — computing statistics, assigning grades, and flagging at-risk students.</p>
+        <div class="code-card">
+          <div class="code-header">
+            <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">grades.py</span></div>
+            <span class="code-lang">Python</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">letter_grade</span>(score: <span class="fn">float</span>) -> <span class="fn">str</span>:
+    <span class="kw">if</span>   score >= <span class="nb">90</span>: <span class="kw">return</span> <span class="st">"A"</span>
+    <span class="kw">elif</span> score >= <span class="nb">80</span>: <span class="kw">return</span> <span class="st">"B"</span>
+    <span class="kw">elif</span> score >= <span class="nb">70</span>: <span class="kw">return</span> <span class="st">"C"</span>
+    <span class="kw">elif</span> score >= <span class="nb">60</span>: <span class="kw">return</span> <span class="st">"D"</span>
+    <span class="kw">else</span>:            <span class="kw">return</span> <span class="st">"F"</span>
+
+<span class="kw">def</span> <span class="fn">class_statistics</span>(scores: <span class="fn">list</span>) -> <span class="fn">dict</span>:
+    <span class="dc">"""Compute descriptive statistics for a list of scores."""</span>
+    n = <span class="fn">len</span>(scores)
+    avg = <span class="fn">sum</span>(scores) / n
+    sorted_scores = <span class="fn">sorted</span>(scores)
+    median = sorted_scores[n // <span class="nb">2</span>] <span class="kw">if</span> n % <span class="nb">2</span> <span class="kw">else</span> \
+             (sorted_scores[n//<span class="nb">2</span>-<span class="nb">1</span>] + sorted_scores[n//<span class="nb">2</span>]) / <span class="nb">2</span>
+    variance  = <span class="fn">sum</span>((x - avg)**<span class="nb">2</span> <span class="kw">for</span> x <span class="kw">in</span> scores) / n
+    std_dev   = variance ** <span class="nb">0.5</span>
+    <span class="kw">return</span> {
+        <span class="st">"count"</span>: n, <span class="st">"mean"</span>: <span class="fn">round</span>(avg, <span class="nb">2</span>),
+        <span class="st">"median"</span>: median, <span class="st">"std_dev"</span>: <span class="fn">round</span>(std_dev, <span class="nb">2</span>),
+        <span class="st">"highest"</span>: <span class="fn">max</span>(scores), <span class="st">"lowest"</span>: <span class="fn">min</span>(scores)
+    }
+
+<span class="kw">def</span> <span class="fn">flag_at_risk</span>(students: <span class="fn">list</span>, threshold: <span class="fn">float</span> = <span class="nb">60</span>) -> <span class="fn">list</span>:
+    <span class="kw">return</span> [s <span class="kw">for</span> s <span class="kw">in</span> students <span class="kw">if</span> s[<span class="st">"score"</span>] < threshold]
+
+<span class="cm"># Usage</span>
+students = [
+    {<span class="st">"name"</span>: <span class="st">"Riya"</span>, <span class="st">"score"</span>: <span class="nb">92</span>}, {<span class="st">"name"</span>: <span class="st">"Arjun"</span>, <span class="st">"score"</span>: <span class="nb">55</span>},
+    {<span class="st">"name"</span>: <span class="st">"Priya"</span>, <span class="st">"score"</span>: <span class="nb">78</span>}, {<span class="st">"name"</span>: <span class="st">"Karan"</span>, <span class="st">"score"</span>: <span class="nb">41</span>},
+]
+scores = [s[<span class="st">"score"</span>] <span class="kw">for</span> s <span class="kw">in</span> students]
+stats = <span class="fn">class_statistics</span>(scores)
+<span class="fn">print</span>(stats)
+<span class="fn">print</span>(<span class="st">"At-risk:"</span>, <span class="fn">flag_at_risk</span>(students))</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROBLEM 4 -->
+    <div class="problem-card">
+      <div class="problem-header">
+        <div class="problem-icon">🔐</div>
+        <div class="problem-meta">
+          <div class="problem-tag">Security / DevOps</div>
+          <div class="problem-title">Password Strength Validator</div>
+        </div>
+      </div>
+      <div class="problem-body">
+        <p>Every app that handles user accounts needs to enforce password policies. Functions let each rule be tested independently.</p>
+        <div class="code-card">
+          <div class="code-header">
+            <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">password.py</span></div>
+            <span class="code-lang">Python</span>
+          </div>
+          <pre><span class="kw">import</span> re
+
+<span class="kw">def</span> <span class="fn">has_minimum_length</span>(pwd, min_len=<span class="nb">8</span>) -> <span class="fn">bool</span>:
+    <span class="kw">return</span> <span class="fn">len</span>(pwd) >= min_len
+
+<span class="kw">def</span> <span class="fn">has_uppercase</span>(pwd) -> <span class="fn">bool</span>:
+    <span class="kw">return</span> <span class="fn">bool</span>(re.search(<span class="st">r"[A-Z]"</span>, pwd))
+
+<span class="kw">def</span> <span class="fn">has_digit</span>(pwd) -> <span class="fn">bool</span>:
+    <span class="kw">return</span> <span class="fn">bool</span>(re.search(<span class="st">r"\d"</span>, pwd))
+
+<span class="kw">def</span> <span class="fn">has_special_char</span>(pwd) -> <span class="fn">bool</span>:
+    <span class="kw">return</span> <span class="fn">bool</span>(re.search(<span class="st">r"[!@#$%^&*(),.?\":{}|<>]"</span>, pwd))
+
+<span class="kw">def</span> <span class="fn">validate_password</span>(pwd: <span class="fn">str</span>) -> <span class="fn">dict</span>:
+    <span class="dc">"""Return a report of which rules pass/fail."""</span>
+    rules = {
+        <span class="st">"min_length"</span>:   <span class="fn">has_minimum_length</span>(pwd),
+        <span class="st">"uppercase"</span>:    <span class="fn">has_uppercase</span>(pwd),
+        <span class="st">"digit"</span>:        <span class="fn">has_digit</span>(pwd),
+        <span class="st">"special_char"</span>: <span class="fn">has_special_char</span>(pwd),
+    }
+    passed  = <span class="fn">sum</span>(rules.values())
+    strength = [<span class="st">"Very Weak"</span>, <span class="st">"Weak"</span>, <span class="st">"Fair"</span>, <span class="st">"Strong"</span>, <span class="st">"Very Strong"</span>][passed]
+    <span class="kw">return</span> {<span class="st">"rules"</span>: rules, <span class="st">"strength"</span>: strength, <span class="st">"valid"</span>: passed == <span class="nb">4</span>}
+
+result = <span class="fn">validate_password</span>(<span class="st">"MyPass@99"</span>)
+<span class="fn">print</span>(result)
+<span class="cm"># {'rules': {all True}, 'strength': 'Very Strong', 'valid': True}</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROBLEM 5 -->
+    <div class="problem-card">
+      <div class="problem-header">
+        <div class="problem-icon">📦</div>
+        <div class="problem-meta">
+          <div class="problem-tag">Logistics / Supply Chain</div>
+          <div class="problem-title">Inventory Reorder Alert System</div>
+        </div>
+      </div>
+      <div class="problem-body">
+        <p>Warehouses need to automatically detect low-stock items and generate reorder lists. A generator-based solution handles large inventories without loading everything into memory.</p>
+        <div class="code-card">
+          <div class="code-header">
+            <div class="code-header-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="code-filename">inventory.py</span></div>
+            <span class="code-lang">Python</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">low_stock_items</span>(inventory: <span class="fn">list</span>, threshold: <span class="fn">int</span> = <span class="nb">10</span>):
+    <span class="dc">"""Generator that yields items below the reorder threshold."""</span>
+    <span class="kw">for</span> item <span class="kw">in</span> inventory:
+        <span class="kw">if</span> item[<span class="st">"stock"</span>] < threshold:
+            <span class="kw">yield</span> item
+
+<span class="kw">def</span> <span class="fn">generate_reorder_list</span>(inventory, threshold=<span class="nb">10</span>, reorder_qty=<span class="nb">50</span>):
+    <span class="dc">"""Return purchase orders for all low-stock items."""</span>
+    orders = []
+    <span class="kw">for</span> item <span class="kw">in</span> <span class="fn">low_stock_items</span>(inventory, threshold):
+        order_qty = reorder_qty - item[<span class="st">"stock"</span>]
+        orders.append({
+            <span class="st">"sku"</span>:      item[<span class="st">"sku"</span>],
+            <span class="st">"name"</span>:     item[<span class="st">"name"</span>],
+            <span class="st">"current"</span>:  item[<span class="st">"stock"</span>],
+            <span class="st">"order"</span>:    order_qty,
+            <span class="st">"cost"</span>:     <span class="fn">round</span>(order_qty * item[<span class="st">"unit_price"</span>], <span class="nb">2</span>)
+        })
+    <span class="kw">return</span> orders
+
+inventory = [
+    {<span class="st">"sku"</span>: <span class="st">"A01"</span>, <span class="st">"name"</span>: <span class="st">"Pencils"</span>, <span class="st">"stock"</span>: <span class="nb">3</span>,  <span class="st">"unit_price"</span>: <span class="nb">0.5</span>},
+    {<span class="st">"sku"</span>: <span class="st">"B02"</span>, <span class="st">"name"</span>: <span class="st">"Notepads"</span>, <span class="st">"stock"</span>: <span class="nb">50</span>, <span class="st">"unit_price"</span>: <span class="nb">2.0</span>},
+    {<span class="st">"sku"</span>: <span class="st">"C03"</span>, <span class="st">"name"</span>: <span class="st">"Markers"</span>, <span class="st">"stock"</span>: <span class="nb">7</span>,  <span class="st">"unit_price"</span>: <span class="nb">1.5</span>},
+]
+orders = <span class="fn">generate_reorder_list</span>(inventory)
+<span class="kw">for</span> o <span class="kw">in</span> orders:
+    <span class="fn">print</span>(<span class="st">f"Order {o['order']} × {o['name']} (₹{o['cost']})"</span>)</pre>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- 12. BEST PRACTICES -->
+  <section class="section" id="bestpractices">
+    <div class="section-eyebrow">Section 12</div>
+    <h2>Best Practices</h2>
+
+    <h3>✅ Do</h3>
+    <div class="callout green">Write functions that do <strong>one thing only</strong> (Single Responsibility Principle). If your function name contains "and", it probably does too much.</div>
+    <div class="callout green">Add <strong>type hints</strong>: <code style="font-family:var(--mono)">def add(a: int, b: int) -> int</code>. They serve as built-in documentation and enable static analysis tools.</div>
+    <div class="callout green">Write a <strong>docstring</strong> for every non-trivial function. Use Google or NumPy style. Your future self will thank you.</div>
+    <div class="callout green">Use <strong>guard clauses</strong> (early returns) to reduce nesting depth and make the "happy path" obvious.</div>
+
+    <h3>❌ Avoid</h3>
+    <div class="callout orange"><strong>Mutable default arguments</strong>: <code style="font-family:var(--mono)">def f(lst=[])</code> is a famous Python gotcha. The list is shared across all calls. Use <code style="font-family:var(--mono)">None</code> instead and initialise inside the body.</div>
+    <div class="callout orange"><strong>Side effects without warning</strong>: a function named <code style="font-family:var(--mono)">get_user()</code> should not also delete records. Surprise side effects are the top source of bugs.</div>
+    <div class="callout orange"><strong>Functions longer than ~30 lines</strong>: this is a smell. Break them up into smaller, named helpers.</div>
+    <div class="callout orange"><strong>Global state mutation</strong>: functions that modify global variables are hard to test and reason about. Prefer returning new values.</div>
+  </section>
+
+  <!-- 13. QUIZ -->
+  <section class="section" id="quiz">
+    <div class="section-eyebrow">Section 13</div>
+    <h2>Quick Quiz</h2>
+    <p>Test your understanding. Click an option to check your answer.</p>
+
+    <div class="quiz-card">
+      <div class="quiz-q">Q1. What does <code style="font-family:var(--mono)">*args</code> collect inside a function?</div>
+      <ul class="quiz-options">
+        <li onclick="answer(this, false)">A dictionary of keyword arguments</li>
+        <li onclick="answer(this, true)">A tuple of positional arguments</li>
+        <li onclick="answer(this, false)">A list of all variables in scope</li>
+        <li onclick="answer(this, false)">Nothing — it's just a convention</li>
+      </ul>
+      <div class="quiz-feedback">✓ <code>*args</code> packs extra positional arguments into a <strong>tuple</strong>. <code>**kwargs</code> packs keyword arguments into a <strong>dict</strong>.</div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-q">Q2. What is the output of <code style="font-family:var(--mono)">f()</code> here? <br><code style="font-family:var(--mono)">def f(x=[]): x.append(1); return x</code></div>
+      <ul class="quiz-options">
+        <li onclick="answer(this, false)">[1] every time</li>
+        <li onclick="answer(this, true)">[1], [1,1], [1,1,1] … grows each call</li>
+        <li onclick="answer(this, false)">Error — can't use list as default</li>
+        <li onclick="answer(this, false)">Always returns []</li>
+      </ul>
+      <div class="quiz-feedback">✓ Mutable default arguments are created once and reused. This is a classic Python gotcha — always use <code>None</code> as default and initialise inside the body.</div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-q">Q3. What does a <code style="font-family:var(--mono)">yield</code> statement make a function?</div>
+      <ul class="quiz-options">
+        <li onclick="answer(this, false)">A decorator</li>
+        <li onclick="answer(this, false)">A recursive function</li>
+        <li onclick="answer(this, true)">A generator function</li>
+        <li onclick="answer(this, false)">A lambda</li>
+      </ul>
+      <div class="quiz-feedback">✓ Any function containing <code>yield</code> becomes a <strong>generator function</strong>. Calling it returns a generator object that produces values lazily.</div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-q">Q4. Which decorator caches the return values of a function?</div>
+      <ul class="quiz-options">
+        <li onclick="answer(this, false)">@staticmethod</li>
+        <li onclick="answer(this, false)">@property</li>
+        <li onclick="answer(this, true)">@functools.lru_cache</li>
+        <li onclick="answer(this, false)">@classmethod</li>
+      </ul>
+      <div class="quiz-feedback">✓ <code>@functools.lru_cache</code> (Least Recently Used cache) memoizes function results, dramatically speeding up repeated calls with the same arguments.</div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // Progress bar
+  window.addEventListener("scroll", () => {
+    const doc = document.documentElement;
+    const progress = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+    document.getElementById("progress").style.width = progress + "%";
+  });
+
+  // Active nav link
+  const sections = document.querySelectorAll(".section");
+  const links = document.querySelectorAll(".sidebar a");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove("active"));
+        const active = document.querySelector(`.sidebar a[href="#${e.target.id}"]`);
+        if (active) active.classList.add("active");
+      }
+    });
+  }, { rootMargin: "-20% 0px -70% 0px" });
+  sections.forEach(s => observer.observe(s));
+
+  // Quiz
+  function answer(el, correct) {
+    const card = el.closest(".quiz-card");
+    const items = card.querySelectorAll("li");
+    items.forEach(i => i.onclick = null); // disable after answering
+    el.classList.add(correct ? "correct" : "wrong");
+    if (!correct) {
+      items.forEach(i => { if (i.dataset.correct !== undefined || i !== el) {} });
+    }
+    const fb = card.querySelector(".quiz-feedback");
+    fb.style.display = "block";
+  }
+</script>
+</body>
+</html>

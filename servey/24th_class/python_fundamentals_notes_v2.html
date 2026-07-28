@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Fundamentals — Lecture Notes | CodeBridge Japan</title>
+<style>
+  :root{
+    --bg: #0f1418;
+    --panel: #161d23;
+    --panel-alt: #1b232a;
+    --ink: #dfe6e9;
+    --ink-dim: #93a1ab;
+    --rule: #2a343c;
+    --accent: #4fb3bf;
+    --accent-soft: #2d5a5f;
+    --gold: #d9a441;
+    --good: #6fbf73;
+    --code-bg: #0b1014;
+    --font-body: 'Noto Sans JP', 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+  }
+  * { box-sizing: border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); line-height:1.65; }
+  .wrap{ max-width: 860px; margin: 0 auto; padding: 0 24px 100px; }
+
+  header.hero{
+    padding: 64px 24px 40px; border-bottom:1px solid var(--rule);
+    max-width: 860px; margin: 0 auto;
+  }
+  .eyebrow{ font-family:var(--font-mono); color:var(--accent); letter-spacing:.14em; text-transform:uppercase; font-size:12px; margin-bottom:14px; }
+  h1.title{ font-size:2.3rem; margin:0 0 10px; line-height:1.15; color:#fff; }
+  .subtitle{ color:var(--ink-dim); font-size:1.02rem; max-width:600px; }
+
+  nav.toc{ background:var(--panel); border:1px solid var(--rule); border-radius:10px; padding:24px 26px; margin:36px 0 8px; }
+  nav.toc h2{ font-size:13px; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-dim); margin:0 0 6px; }
+  .toc-group{ margin-top:18px; }
+  .toc-group h3{ font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin:0 0 8px; }
+  .toc-group ol{ margin:0; padding-left:20px; font-size:14px; columns:2; column-gap:28px; }
+  .toc-group li{ margin-bottom:6px; break-inside: avoid; }
+  nav.toc a{ color:var(--ink); text-decoration:none; }
+  nav.toc a:hover{ color:var(--accent); }
+
+  section.topic{ padding: 46px 0 8px; border-bottom:1px solid var(--rule); }
+  section.topic:last-of-type{ border-bottom:none; }
+  .topic-num{ font-family:var(--font-mono); color:var(--accent); font-size:13px; letter-spacing:.08em; }
+  .badge{ display:inline-block; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; padding:3px 9px; border-radius:20px; margin-left:10px; vertical-align:middle; }
+  .badge-beginner{ background:rgba(111,191,115,0.15); color:var(--good); border:1px solid rgba(111,191,115,0.35); }
+  .badge-intermediate{ background:rgba(217,164,65,0.15); color:var(--gold); border:1px solid rgba(217,164,65,0.35); }
+  .toc-badge{ font-size:9.5px; padding:1px 7px; margin-left:6px; }
+  h2.topic-title{ color:#fff; font-size:1.5rem; margin:6px 0 16px; }
+  h3.sub{ color:var(--gold); font-size:1rem; margin:22px 0 8px; letter-spacing:.02em; }
+  p{ margin:0 0 14px; }
+
+  pre{
+    background:var(--code-bg); border:1px solid var(--rule); border-left:3px solid var(--accent);
+    border-radius:6px; padding:16px 18px; overflow-x:auto; font-family:var(--font-mono); font-size:13.5px; margin:0 0 16px;
+  }
+  code{ font-family:var(--font-mono); }
+  .kw{ color:#e07ba0; } .str{ color:#c3d873; } .num{ color:#d9a441; } .cm{ color:#5f7078; font-style:italic; } .fn{ color:#4fb3bf; }
+
+  .callout{ background:var(--panel-alt); border:1px solid var(--rule); border-radius:8px; padding:16px 18px; margin:0 0 16px; font-size:14px; }
+  .callout .label{ font-family:var(--font-mono); color:var(--accent); font-size:11px; text-transform:uppercase; letter-spacing:.1em; margin-bottom:6px; display:block; }
+
+  .practice{ background:var(--panel); border:1px dashed var(--accent-soft); border-radius:8px; padding:18px 20px; margin:18px 0 10px; }
+  .practice .label{ font-family:var(--font-mono); color:var(--gold); font-size:11px; text-transform:uppercase; letter-spacing:.1em; margin-bottom:8px; display:block; }
+  .practice ol{ margin:0; padding-left:20px; } .practice li{ margin-bottom:8px; }
+
+  footer{ text-align:center; padding:50px 24px; color:var(--ink-dim); font-size:13px; font-family:var(--font-mono); }
+
+  .appendix-header{ padding:56px 0 10px; }
+  .appendix-header h2{ color:#fff; font-size:1.9rem; margin:0 0 8px; }
+  .appendix-header p{ color:var(--ink-dim); font-size:14px; }
+
+  details.answer{
+    background:var(--panel); border:1px solid var(--rule); border-radius:8px;
+    padding:14px 18px; margin-bottom:10px;
+  }
+  details.answer summary{
+    cursor:pointer; font-family:var(--font-mono); font-size:13.5px; color:var(--ink);
+    list-style:none; display:flex; align-items:center; gap:10px;
+  }
+  details.answer summary::-webkit-details-marker{ display:none; }
+  details.answer summary::before{
+    content:"▸"; color:var(--accent); font-size:12px; transition:transform 0.15s;
+  }
+  details.answer[open] summary::before{ transform:rotate(90deg); }
+  details.answer summary .snum{ color:var(--gold); font-weight:600; }
+  details.answer .answer-body{ margin-top:14px; padding-top:14px; border-top:1px solid var(--rule); }
+  details.answer .answer-body pre{ margin-bottom:8px; }
+
+  .practice li{ margin-bottom:14px; }
+  details.answer-inline{
+    margin-top:8px; background:var(--code-bg); border:1px solid var(--rule);
+    border-radius:6px; padding:8px 12px;
+  }
+  details.answer-inline summary{
+    cursor:pointer; font-family:var(--font-mono); font-size:12px; color:var(--accent);
+    list-style:none; letter-spacing:.04em; text-transform:uppercase;
+  }
+  details.answer-inline summary::-webkit-details-marker{ display:none; }
+  details.answer-inline summary::before{ content:"▸ "; }
+  details.answer-inline[open] summary::before{ content:"▾ "; }
+  details.answer-inline .answer-body{ margin-top:8px; padding-top:0; border-top:none; }
+  details.answer-inline .answer-body pre{ margin-bottom:0; font-size:12.5px; }
+
+  .final-cheatsheet{
+    display:grid; grid-template-columns: 1fr 1fr; gap:14px;
+  }
+  .fc-card{
+    background:var(--panel); border:1px solid var(--rule); border-radius:8px; padding:16px 18px;
+  }
+  .fc-card h4{ color:var(--gold); font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:.08em; margin:0 0 10px; }
+  .fc-card pre{ margin:0; font-size:12.5px; padding:12px 14px; }
+  @media (max-width:700px){ .final-cheatsheet{ grid-template-columns:1fr; } }
+
+  ::selection{ background:var(--accent-soft); color:#fff; }
+
+  @media (max-width:600px){ .toc-group ol{ columns:1; } h1.title{ font-size:1.9rem; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">CodeBridge Japan — Python Fundamentals</div>
+  <h1 class="title">Python Fundamentals — Complete Reference</h1>
+  <p class="subtitle">A structured, ground-up walkthrough of Python fundamentals, ordered to build on itself from first principles to composition.</p>
+  <p style="color:var(--ink-dim); font-size:13px; margin-top:14px;"><strong>Prerequisite:</strong> this note assumes you already know how to define a function with <code>def</code>, use <code>*args</code>/<code>**kwargs</code>, and return a value — covered in the earlier Functions lecture sheet. Everything else needed is built from scratch below.</p>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <h2>Content Index</h2>
+  <p style="color:var(--ink-dim); font-size:12px; margin:0 0 18px;"><span style="color:var(--good);">●</span> Beginner &nbsp;&nbsp; <span style="color:var(--gold);">●</span> Intermediate</p>
+
+  <div class="toc-group">
+    <h3>Part I — Core Building Blocks</h3>
+    <ol>
+      <li><a href="#t1">01. Variables, Naming &amp; Comments</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+      <li><a href="#t2">02. Data Types &amp; Type Conversion</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+      <li><a href="#t3">03. Numbers &amp; Number Systems</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+      <li><a href="#t4">04. Boolean Logic &amp; None</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+      <li><a href="#t5">05. Constants, Chained Assignment &amp; Swapping</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+    </ol>
+  </div>
+
+  <div class="toc-group">
+    <h3>Part II — Expressions &amp; Text</h3>
+    <ol>
+      <li><a href="#t6">06. Operators</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+      <li><a href="#t7">07. Strings &amp; Escape Sequences</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+      <li><a href="#t8">08. Input &amp; Output</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+    </ol>
+  </div>
+
+  <div class="toc-group">
+    <h3>Part III — Flow &amp; Collections</h3>
+    <ol>
+      <li><a href="#t9">09. Control Flow</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+      <li><a href="#t10">10. Data Structures</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+      <li><a href="#t11">11. Data Structure Methods</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+      <li><a href="#t12">12. Nested Data Structures</a> <span style="color:var(--gold);font-size:10px;">●</span></li>
+      <li><a href="#t13">13. Unpacking &amp; Throwaway Variables</a> <span style="color:var(--gold);font-size:10px;">●</span></li>
+      <li><a href="#t14">14. Mutability</a> <span style="color:var(--gold);font-size:10px;">●</span></li>
+      <li><a href="#t15">15. Slicing &amp; Repetition</a> <span style="color:var(--gold);font-size:10px;">●</span></li>
+    </ol>
+  </div>
+
+  <div class="toc-group">
+    <h3>Part IV — Working with Data, Fluently</h3>
+    <ol>
+      <li><a href="#t16">16. Comprehensions</a> <span style="color:var(--gold);font-size:10px;">●</span></li>
+      <li><a href="#t17">17. Functional Tools &amp; Lambda</a> <span style="color:var(--gold);font-size:10px;">●</span></li>
+      <li><a href="#t18">18. Sorting with key= and reverse=</a> <span style="color:var(--gold);font-size:10px;">●</span></li>
+    </ol>
+  </div>
+
+  <div class="toc-group">
+    <h3>Part V — Structure &amp; Discipline</h3>
+    <ol>
+      <li><a href="#t19">19. Scope, Namespaces &amp; Nested Functions</a> <span style="color:var(--gold);font-size:10px;">●</span></li>
+      <li><a href="#t20">20. Docstrings &amp; Type Hints</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+      <li><a href="#t21">21. Debugging &amp; assert</a> <span style="color:var(--gold);font-size:10px;">●</span></li>
+      <li><a href="#t22">22. Useful Built-in Helpers</a> <span style="color:var(--good);font-size:10px;">●</span></li>
+    </ol>
+  </div>
+</nav>
+
+<nav class="toc" style="margin-top:20px;">
+  <h2>Quick Revision Cheat Sheet</h2>
+  <p style="color:var(--ink-dim); font-size:13px; margin:0 0 18px;">One line per topic — read this first for a fast recap, then jump into any section below for the full explanation and practice.</p>
+
+  <div class="toc-group">
+    <h3>Part I</h3>
+    <ol style="columns:1; font-size:13.5px;">
+      <li><a href="#t1"><strong>Variables</strong></a> — a name pointing to a value; type is inferred automatically.</li>
+      <li><a href="#t2"><strong>Data Types</strong></a> — int, float, str, bool; convert between them with <code>int()</code>, <code>str()</code>, etc.</li>
+      <li><a href="#t3"><strong>Numbers</strong></a> — <code>/</code> gives decimals, <code>//</code> floors, <code>%</code> gives the remainder.</li>
+      <li><a href="#t4"><strong>Booleans &amp; None</strong></a> — empty/zero values are "falsy"; <code>None</code> means "no value yet," checked with <code>is</code>.</li>
+      <li><a href="#t5"><strong>Constants &amp; Swapping</strong></a> — UPPER_CASE signals "don't change this"; swap with <code>a, b = b, a</code>.</li>
+    </ol>
+  </div>
+
+  <div class="toc-group">
+    <h3>Part II</h3>
+    <ol style="columns:1; font-size:13.5px;">
+      <li><a href="#t6"><strong>Operators</strong></a> — arithmetic, comparison, logical, plus ternary/walrus/chained shortcuts.</li>
+      <li><a href="#t7"><strong>Strings</strong></a> — built-in methods clean and reshape text; <code>\n</code>/<code>\t</code> insert special characters.</li>
+      <li><a href="#t8"><strong>Input &amp; Output</strong></a> — <code>input()</code> always returns a string; <code>print()</code>/f-strings control formatting.</li>
+    </ol>
+  </div>
+
+  <div class="toc-group">
+    <h3>Part III</h3>
+    <ol style="columns:1; font-size:13.5px;">
+      <li><a href="#t9"><strong>Control Flow</strong></a> — <code>while</code> repeats until false, <code>for</code> repeats over a collection.</li>
+      <li><a href="#t10"><strong>Data Structures</strong></a> — list (ordered, changeable), tuple (fixed), dict (labeled), set (unique).</li>
+      <li><a href="#t11"><strong>Structure Methods</strong></a> — <code>.append()</code>, <code>.get()</code>, <code>.union()</code> and friends save you from writing loops.</li>
+      <li><a href="#t12"><strong>Nested Structures</strong></a> — real data is often a list of dicts, or a dict of lists.</li>
+      <li><a href="#t13"><strong>Unpacking</strong></a> — assign several variables from one collection at once; <code>_</code> means "ignore this one."</li>
+      <li><a href="#t14"><strong>Mutability</strong></a> — lists/dicts/sets can change in place; numbers/strings/tuples cannot.</li>
+      <li><a href="#t15"><strong>Slicing &amp; Repetition</strong></a> — <code>[start:stop:step]</code> pulls a sub-section; <code>*</code> repeats a value.</li>
+    </ol>
+  </div>
+
+  <div class="toc-group">
+    <h3>Part IV</h3>
+    <ol style="columns:1; font-size:13.5px;">
+      <li><a href="#t16"><strong>Comprehensions</strong></a> — build a list/dict/set in one line; filter (<code>if</code> at end) vs transform (<code>if...else</code> in middle).</li>
+      <li><a href="#t17"><strong>Functional Tools &amp; Lambda</strong></a> — <code>lambda</code> is a mini function; <code>map</code>/<code>filter</code>/<code>all</code>/<code>any</code> act on whole collections.</li>
+      <li><a href="#t18"><strong>Sorting</strong></a> — <code>key=</code> tells <code>sorted()</code> what to compare by; <code>reverse=True</code> flips the order.</li>
+    </ol>
+  </div>
+
+  <div class="toc-group">
+    <h3>Part V</h3>
+    <ol style="columns:1; font-size:13.5px;">
+      <li><a href="#t19"><strong>Scope</strong></a> — local variables live inside a function; <code>global</code>/<code>nonlocal</code> reach outside it.</li>
+      <li><a href="#t20"><strong>Docstrings &amp; Type Hints</strong></a> — a string right after <code>def</code> documents what a function does; type hints do the same for parameter/return types.</li>
+      <li><a href="#t21"><strong>Debugging &amp; assert</strong></a> — <code>print()</code> to trace values, tracebacks to locate errors, <code>assert</code> for sanity checks.</li>
+      <li><a href="#t22"><strong>Built-in Helpers</strong></a> — <code>enumerate()</code> adds a counter, <code>zip()</code> pairs two lists, <code>sum</code>/<code>min</code>/<code>max</code> summarize.</li>
+    </ol>
+  </div>
+</nav>
+
+<!-- 01 -->
+<section class="topic" id="t1">
+  <div class="topic-num">01</div>
+  <h2 class="topic-title">Variables, Naming &amp; Comments<span class="badge badge-beginner">Beginner</span></h2>
+  <p>A variable is a label pointing to a value in memory — think of it as a sticky note on a box, not the box itself. Python doesn't need a type declaration; the type is inferred automatically from whatever you assign. Naming matters more than it seems: Python has strict rules about what counts as a valid name, and comments (text after a <code>#</code>) let you explain *why* code does something, since the code itself only shows *what* it does.</p>
+  <pre><span class="cm"># price of a train pass in Osaka, in yen</span>
+train_pass_price = <span class="num">3200</span>
+station_name = <span class="str">"Ibaraki"</span>
+is_available = <span class="kw">True</span></pre>
+  <h3 class="sub">Naming rules</h3>
+  <pre><span class="cm"># valid</span>
+monthly_rent = <span class="num">85000</span>
+_privateNote = <span class="str">"draft"</span>
+fare2024 = <span class="num">210</span>
+
+<span class="cm"># invalid — would raise SyntaxError</span>
+<span class="cm"># 2024fare = 210        (can't start with a number)</span>
+<span class="cm"># monthly rent = 85000  (no spaces allowed)</span>
+<span class="cm"># class = "A"           (class is a reserved keyword)</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> A JR ticket costs 320 yen base fare. Suica card users get a 10 yen discount. Calculate the final fare.
+  <pre style="margin-top:10px;">base_fare = <span class="num">320</span>
+ic_card_discount = <span class="num">10</span>
+final_fare = base_fare - ic_card_discount
+
+<span class="fn">print</span>(<span class="str">f"Final fare: ¥{final_fare}"</span>)
+<span class="cm"># Final fare: ¥310</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Create variables for a JR ticket: <code>base_fare</code>, <code>ic_card_discount</code>, <code>final_fare</code>. Compute <code>final_fare</code>, with a comment above each variable.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>base_fare = <span class="num">320</span>
+ic_card_discount = <span class="num">10</span>
+final_fare = base_fare - ic_card_discount
+<span class="fn">print</span>(<span class="str">f"Final fare: ¥{final_fare}"</span>)
+<span class="cm"># Final fare: ¥310</span></pre></div></details>
+      </li>
+      <li>List three variable names that look reasonable but are actually invalid or risky in Python, and explain why for each.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="cm"># 1. 2fare        → invalid, can't start with a number
+# 2. class        → invalid, reserved keyword
+# 3. list         → valid but risky, shadows the built-in list() type</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="topic" id="t2">
+  <div class="topic-num">02</div>
+  <h2 class="topic-title">Data Types &amp; Type Conversion<span class="badge badge-beginner">Beginner</span></h2>
+  <p>Every value in Python has a type — a number, a piece of text, a true/false flag — and the type determines what you can do with it (you can add two numbers, but not a number and a raw string). Type conversion is how you deliberately turn one type into another, most often needed when data arrives as text (from a form, a file, or user input) but needs to be treated as a number.</p>
+  <pre>rent = <span class="num">85000</span>            <span class="cm"># int</span>
+exchange_rate = <span class="num">0.0067</span>    <span class="cm"># float (JPY → USD)</span>
+landlord_name = <span class="str">"Tanaka Fudousan"</span>  <span class="cm"># string</span>
+first_letter = landlord_name[<span class="num">0</span>]      <span class="cm"># indexing</span>
+short_name = landlord_name[:<span class="num">6</span>]       <span class="cm"># slicing</span>
+
+rent_str = <span class="str">"85000"</span>
+rent_int = <span class="fn">int</span>(rent_str)            <span class="cm"># "85000" → 85000</span>
+paid = <span class="kw">bool</span>(rent_int)                <span class="cm"># any nonzero number → True</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> A form submits salary as the string <code>"280000"</code>. Convert it to a number and calculate 20% income tax withheld.
+  <pre style="margin-top:10px;">salary_str = <span class="str">"280000"</span>
+salary = <span class="fn">int</span>(salary_str)
+tax = salary * <span class="num">0.20</span>
+
+<span class="fn">print</span>(<span class="str">f"Tax withheld: ¥{tax:,.0f}"</span>)
+<span class="cm"># Tax withheld: ¥56,000</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Given <code>salary = "280000"</code> (a string), convert it to an integer and calculate 20% income tax withheld.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>salary = <span class="fn">int</span>(<span class="str">"280000"</span>)
+tax = salary * <span class="num">0.20</span>
+<span class="fn">print</span>(<span class="str">f"Tax: ¥{tax:,.0f}"</span>)
+<span class="cm"># Tax: ¥56,000</span></pre></div></details>
+      </li>
+      <li>Write one line that converts a float yen amount like <code>15800.75</code> into an <code>int</code>, and explain what happens to the decimal part.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="fn">int</span>(<span class="num">15800.75</span>)
+<span class="cm"># 15800 — int() truncates (cuts off) the decimal part, it does not round</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="topic" id="t3">
+  <div class="topic-num">03</div>
+  <h2 class="topic-title">Numbers &amp; Number Systems<span class="badge badge-beginner">Beginner</span></h2>
+  <p>Python distinguishes between regular division (which always gives a decimal result), floor division (which rounds down to a whole number), and modulo (which gives you the remainder). Numbers can also be viewed in different bases — binary, hexadecimal, octal — which matters more once you touch lower-level programming, but is good to recognize early.</p>
+  <pre>total_yen = <span class="num">10000</span>
+people = <span class="num">3</span>
+
+each_pays = total_yen // people      <span class="cm"># 3333 (floor division)</span>
+leftover = total_yen % people        <span class="cm"># 1 yen remainder</span>
+exact_share = total_yen / people     <span class="cm"># 3333.333...</span>
+
+<span class="fn">round</span>(exact_share, <span class="num">2</span>)              <span class="cm"># 3333.33</span>
+<span class="fn">bin</span>(<span class="num">10</span>), <span class="fn">hex</span>(<span class="num">255</span>), <span class="fn">oct</span>(<span class="num">8</span>)     <span class="cm"># binary/hex/octal representations</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Three friends split a 10,000 yen izakaya bill. Find each person's floor-divided share and the leftover yen.
+  <pre style="margin-top:10px;">total_yen = <span class="num">10000</span>
+people = <span class="num">3</span>
+
+each_pays = total_yen // people
+leftover = total_yen % people
+
+<span class="fn">print</span>(<span class="str">f"Each pays ¥{each_pays}, leftover ¥{leftover}"</span>)
+<span class="cm"># Each pays ¥3333, leftover ¥1</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Split a 7,500 yen bill among 4 friends using <code>//</code> and <code>%</code>, and print who owes the extra yen.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>total = <span class="num">7500</span>
+people = <span class="num">4</span>
+each = total // people
+leftover = total % people
+<span class="fn">print</span>(<span class="str">f"Each pays ¥{each}, someone owes ¥{leftover} extra"</span>)
+<span class="cm"># Each pays ¥1875, someone owes ¥0 extra</span></pre></div></details>
+      </li>
+      <li>Round a currency conversion result to 2 decimal places using <code>round()</code>.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>usd = <span class="num">10000</span> * <span class="num">0.0067</span>
+<span class="fn">round</span>(usd, <span class="num">2</span>)
+<span class="cm"># 67.0</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="topic" id="t4">
+  <div class="topic-num">04</div>
+  <h2 class="topic-title">Boolean Logic &amp; None<span class="badge badge-beginner">Beginner</span></h2>
+  <p>Booleans are just <code>True</code>/<code>False</code>, but Python also treats certain values as "truthy" or "falsy" in a condition — an empty list, an empty string, or the number 0 all behave like <code>False</code> without you writing it explicitly. <code>None</code> is a special value meaning "no value yet" — different from 0, an empty string, or <code>False</code> — and it needs its own comparison style (<code>is None</code>, not <code>== None</code>).</p>
+  <pre>cart_items = []
+<span class="kw">if</span> <span class="kw">not</span> cart_items:              <span class="cm"># empty list is falsy</span>
+    <span class="fn">print</span>(<span class="str">"Cart is empty"</span>)
+
+discount_code = <span class="kw">None</span>
+final_price = <span class="num">1000</span> - (discount_code <span class="kw">or</span> <span class="num">0</span>)   <span class="cm"># short-circuit: None → 0</span>
+
+tracking_number = <span class="kw">None</span>
+<span class="kw">if</span> tracking_number <span class="kw">is</span> <span class="kw">None</span>:
+    <span class="fn">print</span>(<span class="str">"Package not shipped yet"</span>)</pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> A checkout has no discount code entered (<code>None</code>). Calculate the final price of a 1000 yen item, falling back to 0 discount safely.
+  <pre style="margin-top:10px;">price = <span class="num">1000</span>
+discount_code = <span class="kw">None</span>
+
+final_price = price - (discount_code <span class="kw">or</span> <span class="num">0</span>)
+<span class="fn">print</span>(<span class="str">f"Final price: ¥{final_price}"</span>)
+<span class="cm"># Final price: ¥1000</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>List five Python values that are "falsy" without using <code>False</code> itself.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="num">0</span>, <span class="num">0.0</span>, <span class="str">""</span>, [], <span class="kw">None</span>
+<span class="cm"># all evaluate as False in a condition, without writing False</span></pre></div></details>
+      </li>
+      <li>Write a function that takes an optional <code>discount</code> parameter defaulting to <code>None</code>, and applies 0 discount if none was given.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="kw">def</span> <span class="fn">apply_discount</span>(price, discount=<span class="kw">None</span>):
+    <span class="kw">return</span> price - (discount <span class="kw">or</span> <span class="num">0</span>)
+
+<span class="fn">print</span>(<span class="fn">apply_discount</span>(<span class="num">1000</span>))
+<span class="cm"># 1000</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="topic" id="t5">
+  <div class="topic-num">05</div>
+  <h2 class="topic-title">Constants, Chained Assignment &amp; Swapping<span class="badge badge-beginner">Beginner</span></h2>
+  <p>Python has no true "constant" keyword — instead, writing a variable name in ALL_CAPS is a convention that tells anyone reading the code "don't reassign this." Chained assignment lets you set several variable names to the same value in one line, and Python's tuple-style swapping lets you exchange two variables' values without a temporary holder, unlike most other languages.</p>
+  <pre>MAX_STUDENTS_PER_BATCH = <span class="num">20</span>     <span class="cm"># UPPER_CASE by convention = constant</span>
+EARLY_BIRD_DISCOUNT = <span class="num">0.15</span>
+
+base_fare = child_fare = senior_fare = <span class="num">150</span>   <span class="cm"># chained assignment</span>
+
+adult_fare, student_fare = <span class="num">300</span>, <span class="num">210</span>
+adult_fare, student_fare = student_fare, adult_fare   <span class="cm"># swap in one line</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> A fare table accidentally has weekday_fare = 210 and weekend_fare = 260 swapped. Fix it in one line.
+  <pre style="margin-top:10px;">weekday_fare = <span class="num">210</span>
+weekend_fare = <span class="num">260</span>
+
+weekday_fare, weekend_fare = weekend_fare, weekday_fare
+<span class="fn">print</span>(weekday_fare, weekend_fare)
+<span class="cm"># 260 210</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Rewrite a set of course-fee variables using proper snake_case and UPPER_CASE conventions.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>MAX_COURSE_FEE = <span class="num">50000</span>
+early_bird_discount = <span class="num">0.15</span>   <span class="cm"># fixed: was "EarlyBirdDiscount"</span></pre></div></details>
+      </li>
+      <li>Swap two variables holding "weekday_fare" and "weekend_fare" without using a temporary variable.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>weekday_fare, weekend_fare = <span class="num">210</span>, <span class="num">260</span>
+weekday_fare, weekend_fare = weekend_fare, weekday_fare
+<span class="fn">print</span>(weekday_fare, weekend_fare)
+<span class="cm"># 260 210</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="topic" id="t6">
+  <div class="topic-num">06</div>
+  <h2 class="topic-title">Operators<span class="badge badge-beginner">Beginner</span></h2>
+  <p>Operators are the symbols that combine or compare values: arithmetic (<code>+ - * / // %</code>), comparison (<code>== != &gt; &lt;</code>), and logical (<code>and or not</code>). Python adds a few convenient extras beyond the basics — the ternary expression for one-line if/else, the walrus operator for assigning inside a condition, and chained comparisons that read like plain math (<code>0 &lt; x &lt; 10</code>).</p>
+  <pre>total = (<span class="num">3200</span> + <span class="num">1200</span>) * <span class="num">1.1</span>   <span class="cm"># fare + baggage fee, with 10% tax</span>
+is_expensive = total > <span class="num">5000</span>
+can_afford = (budget >= total) <span class="kw">and</span> is_expensive == <span class="kw">False</span>
+
+accepted_cards = [<span class="str">"Suica"</span>, <span class="str">"ICOCA"</span>, <span class="str">"PASMO"</span>]
+<span class="str">"ICOCA"</span> <span class="kw">in</span> accepted_cards   <span class="cm"># True — membership</span>
+
+status = <span class="str">"discount"</span> <span class="kw">if</span> age < <span class="num">12</span> <span class="kw">else</span> <span class="str">"full fare"</span>   <span class="cm"># ternary</span>
+
+<span class="kw">if</span> (balance := <span class="num">10000</span> - fare) > <span class="num">0</span>:   <span class="cm"># walrus operator</span>
+    <span class="fn">print</span>(<span class="str">"Remaining balance:"</span>, balance)
+
+<span class="kw">if</span> <span class="num">100</span> <= fare <= <span class="num">500</span>:              <span class="cm"># chained comparison</span>
+    <span class="fn">print</span>(<span class="str">"short-distance fare"</span>)</pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> A fare gate needs to check if a rider's IC balance (currently ¥300) is enough to cover a ¥210 fare, and confirm the fare is a valid "short-distance" fare (100–500 yen).
+  <pre style="margin-top:10px;">balance = <span class="num">300</span>
+fare = <span class="num">210</span>
+
+can_ride = balance >= fare
+is_short_distance = <span class="num">100</span> <= fare <= <span class="num">500</span>
+
+<span class="fn">print</span>(<span class="str">f"Can ride: {can_ride}, short-distance: {is_short_distance}"</span>)
+<span class="cm"># Can ride: True, short-distance: True</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Write a chained comparison that checks if a bus fare is between 210 and 470 yen.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>fare = <span class="num">350</span>
+<span class="kw">if</span> <span class="num">210</span> <= fare <= <span class="num">470</span>:
+    <span class="fn">print</span>(<span class="str">"Valid bus fare"</span>)
+<span class="cm"># Valid bus fare</span></pre></div></details>
+      </li>
+      <li>Use the walrus operator to compute change from a 1000 yen note after buying a 380 yen drink, only printing it if change > 0.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="kw">if</span> (change := <span class="num">1000</span> - <span class="num">380</span>) > <span class="num">0</span>:
+    <span class="fn">print</span>(<span class="str">f"Change: ¥{change}"</span>)
+<span class="cm"># Change: ¥620</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="topic" id="t7">
+  <div class="topic-num">07</div>
+  <h2 class="topic-title">Strings &amp; Escape Sequences<span class="badge badge-beginner">Beginner</span></h2>
+  <p>Strings come with a large built-in toolkit for cleaning, splitting, joining, and reformatting text — essential since real-world data is rarely already in the shape you need. Escape sequences (<code>\n</code>, <code>\t</code>, <code>\\</code>) let you embed special characters like new lines or tabs inside a string, while a raw string (prefixed with <code>r</code>) tells Python to ignore escape sequences entirely, useful for file paths.</p>
+  <pre>address = <span class="str">"  Ibaraki-shi, Osaka  "</span>
+clean = address.strip()
+parts = clean.split(<span class="str">","</span>)
+joined = <span class="str">" / "</span>.join(parts)
+upper = clean.upper()
+
+name = <span class="str">"Refadul"</span>
+f_string = <span class="str">f"Hello, {name}"</span>            <span class="cm"># preferred in modern Python</span>
+
+receipt = <span class="str">"Item\tPrice\nBento\t¥480\nTea\t¥150"</span>   <span class="cm"># \t and \n escapes</span>
+literal_backslash = <span class="str">"C:\\Users\\Refadul"</span>          <span class="cm"># escaped backslash</span>
+windows_path = <span class="kw">r</span><span class="str">"C:\Users\Refadul\Documents"</span>       <span class="cm"># raw string — no escaping needed</span>
+
+<span class="str">"Osaka"</span> <span class="kw">in</span> address       <span class="cm"># substring check — True</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> A scraped utility bill reads <code>"  Electricity: ¥8,400  "</code>. Clean it up and extract just the numeric amount as an integer.
+  <pre style="margin-top:10px;">bill = <span class="str">"  Electricity: ¥8,400  "</span>
+clean = bill.strip()                          <span class="cm"># "Electricity: ¥8,400"</span>
+amount_str = clean.split(<span class="str">"¥"</span>)[<span class="num">1</span>]              <span class="cm"># "8,400"</span>
+amount = <span class="fn">int</span>(amount_str.replace(<span class="str">","</span>, <span class="str">""</span>))   <span class="cm"># 8400</span>
+
+<span class="fn">print</span>(<span class="str">f"Amount: ¥{amount}"</span>)
+<span class="cm"># Amount: ¥8400</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Given <code>bill = "  Electricity: ¥8,400  "</code>, clean it up and extract just the numeric amount as an integer.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>bill = <span class="str">"  Electricity: ¥8,400  "</span>
+amount = <span class="fn">int</span>(bill.strip().split(<span class="str">"¥"</span>)[<span class="num">1</span>].replace(<span class="str">","</span>, <span class="str">""</span>))
+<span class="fn">print</span>(amount)
+<span class="cm"># 8400</span></pre></div></details>
+      </li>
+      <li>Check whether the string <code>"Shiga"</code> appears inside a full mailing address string.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>address = <span class="str">"2-3 Ibaraki-shi, Shiga, Japan"</span>
+<span class="str">"Shiga"</span> <span class="kw">in</span> address
+<span class="cm"># True</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="topic" id="t8">
+  <div class="topic-num">08</div>
+  <h2 class="topic-title">Input &amp; Output<span class="badge badge-beginner">Beginner</span></h2>
+  <p><code>input()</code> pauses a program and waits for the user to type something — and always hands it back as a string, even if it looks like a number, so it usually needs converting. <code>print()</code> does more than just display text: its <code>sep</code> and <code>end</code> options control spacing, and f-strings let you format numbers (like adding comma separators to a yen amount) directly inside the printed text.</p>
+  <pre>name = <span class="fn">input</span>(<span class="str">"Enter your name: "</span>)
+budget = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Monthly budget (yen): "</span>))
+
+<span class="fn">print</span>(<span class="str">"Hello"</span>, name, sep=<span class="str">", "</span>, end=<span class="str">"!\n"</span>)
+<span class="fn">print</span>(<span class="str">f"Budget: ¥{budget:,}"</span>)   <span class="cm"># f-string with thousands separator</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Ask the user for their monthly income and print the recommended max rent (30% of income), formatted with commas.
+  <pre style="margin-top:10px;">income = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Monthly income (yen): "</span>))
+recommended_rent = income * <span class="num">0.30</span>
+
+<span class="fn">print</span>(<span class="str">f"Recommended max rent: ¥{recommended_rent:,.0f}"</span>)
+<span class="cm"># (if income = 250000) → Recommended max rent: ¥75,000</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Write a program that asks for monthly income and prints the recommended max rent (30% of income), formatted with a yen sign and commas.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>income = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Monthly income (yen): "</span>))
+rent = income * <span class="num">0.30</span>
+<span class="fn">print</span>(<span class="str">f"Recommended max rent: ¥{rent:,.0f}"</span>)</pre></div></details>
+      </li>
+      <li>Use <code>print()</code> with a custom <code>sep</code> to print three grocery items separated by " | " instead of a space.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="fn">print</span>(<span class="str">"Rice"</span>, <span class="str">"Miso"</span>, <span class="str">"Tofu"</span>, sep=<span class="str">" | "</span>)
+<span class="cm"># Rice | Miso | Tofu</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="topic" id="t9">
+  <div class="topic-num">09</div>
+  <h2 class="topic-title">Control Flow<span class="badge badge-beginner">Beginner</span></h2>
+  <p>Control flow is how a program decides what to run, and how many times. A <code>while</code> loop repeats as long as a condition stays true (good when you don't know the number of repetitions in advance), a <code>for</code> loop repeats a fixed number of times or over a known collection, and <code>break</code>/<code>continue</code> give you early exits or skips inside either. Loops can also be nested — one loop running fully inside each pass of another — for anything with two dimensions, like a table. <code>range()</code> is the standard way to loop a fixed number of times without a real list, and <code>for...else</code> (like <code>while...else</code>) runs its <code>else</code> block only if the loop finished normally, without hitting a <code>break</code>.</p>
+  <pre>balance = <span class="num">1500</span>
+fare = <span class="num">210</span>
+
+<span class="kw">while</span> balance >= fare:
+    balance -= fare
+    <span class="fn">print</span>(<span class="str">"Ride taken, balance:"</span>, balance)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"Balance too low, please recharge."</span>)
+
+<span class="kw">for</span> station <span class="kw">in</span> [<span class="str">"Ibaraki"</span>, <span class="str">"Takatsuki"</span>, <span class="str">"Shin-Osaka"</span>]:
+    <span class="kw">if</span> station == <span class="str">"Takatsuki"</span>:
+        <span class="kw">continue</span>
+    <span class="fn">print</span>(<span class="str">"Stopping at"</span>, station)
+
+<span class="cm"># range() — loop a fixed number of times without a real list</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):
+    <span class="fn">print</span>(<span class="str">f"Ticket #{i + 1} issued"</span>)
+
+<span class="cm"># for...else — else runs only if the loop never hit break</span>
+tickets = [<span class="str">"A1"</span>, <span class="str">"A2"</span>, <span class="str">"A3"</span>]
+<span class="kw">for</span> ticket <span class="kw">in</span> tickets:
+    <span class="kw">if</span> ticket == <span class="str">"B1"</span>:
+        <span class="fn">print</span>(<span class="str">"Found B1!"</span>)
+        <span class="kw">break</span>
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"B1 was never found"</span>)
+
+<span class="cm"># nested loop — every station × every ticket type</span>
+stations = [<span class="str">"Ibaraki"</span>, <span class="str">"Takatsuki"</span>]
+ticket_types = [<span class="str">"Adult"</span>, <span class="str">"Child"</span>]
+<span class="kw">for</span> station <span class="kw">in</span> stations:
+    <span class="kw">for</span> ticket <span class="kw">in</span> ticket_types:
+        <span class="fn">print</span>(<span class="str">f"{station} — {ticket} fare"</span>)</pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> A vending machine needs at least 150 yen. Simulate inserting 100 yen coins one at a time until there's enough, then print the change owed.
+  <pre style="margin-top:10px;">price = <span class="num">150</span>
+inserted = <span class="num">0</span>
+
+<span class="kw">while</span> inserted < price:
+    inserted += <span class="num">100</span>
+    <span class="fn">print</span>(<span class="str">"Inserted so far:"</span>, inserted)
+
+change = inserted - price
+<span class="fn">print</span>(<span class="str">f"Change owed: ¥{change}"</span>)
+<span class="cm"># Inserted so far: 100
+# Inserted so far: 200
+# Change owed: ¥50</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Simulate a vending machine: loop while <code>inserted_amount < 150</code>, adding 100 yen coins one at a time, and print change owed once it's enough.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>inserted = <span class="num">0</span>
+<span class="kw">while</span> inserted < <span class="num">150</span>:
+    inserted += <span class="num">100</span>
+    <span class="fn">print</span>(<span class="str">"Inserted:"</span>, inserted)
+<span class="fn">print</span>(<span class="str">f"Change: ¥{inserted - 150}"</span>)
+<span class="cm"># Inserted: 100
+# Inserted: 200
+# Change: ¥50</span></pre></div></details>
+      </li>
+      <li>Print a full table of station × fare-type using nested loops.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>stations = [<span class="str">"Ibaraki"</span>, <span class="str">"Takatsuki"</span>]
+tickets = [<span class="str">"Adult"</span>, <span class="str">"Child"</span>]
+<span class="kw">for</span> s <span class="kw">in</span> stations:
+    <span class="kw">for</span> t <span class="kw">in</span> tickets:
+        <span class="fn">print</span>(<span class="str">f"{s} — {t}"</span>)</pre></div></details>
+      </li>
+      <li>Use <code>range()</code> to print "Day 1" through "Day 7" of a JLPT study plan.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">7</span>):
+    <span class="fn">print</span>(<span class="str">f"Day {i + 1}"</span>)
+<span class="cm"># Day 1
+# Day 2
+# ... through Day 7</span></pre></div></details>
+      </li>
+      <li>Use <code>for...else</code> to search a list of station names for "Namba", printing "Not found" only if the loop completes without a <code>break</code>.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>stations = [<span class="str">"Umeda"</span>, <span class="str">"Tenma"</span>, <span class="str">"Juso"</span>]
+<span class="kw">for</span> s <span class="kw">in</span> stations:
+    <span class="kw">if</span> s == <span class="str">"Namba"</span>:
+        <span class="fn">print</span>(<span class="str">"Found Namba!"</span>)
+        <span class="kw">break</span>
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"Not found"</span>)
+<span class="cm"># Not found</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="topic" id="t10">
+  <div class="topic-num">10</div>
+  <h2 class="topic-title">Data Structures<span class="badge badge-beginner">Beginner</span></h2>
+  <p>Python's four core built-in collections each fit a different shape of data. Use a <strong>list</strong> when order matters and the contents can change; a <strong>tuple</strong> when order matters but the contents are fixed once created; a <strong>dictionary</strong> when each value needs a meaningful label (a key) rather than just a position; and a <strong>set</strong> when you only care about unique items and don't need any particular order.</p>
+  <pre><span class="cm"># List — ordered, changeable</span>
+monthly_expenses = [<span class="num">85000</span>, <span class="num">12000</span>, <span class="num">8000</span>]
+
+<span class="cm"># Tuple — ordered, unchangeable</span>
+apartment_location = (<span class="str">"Ibaraki"</span>, <span class="str">"Osaka"</span>, <span class="str">"Japan"</span>)
+
+<span class="cm"># Dictionary — key/value pairs</span>
+lease = {<span class="str">"rent"</span>: <span class="num">85000</span>, <span class="str">"deposit"</span>: <span class="num">170000</span>, <span class="str">"key_money"</span>: <span class="num">85000</span>}
+
+<span class="cm"># Set — unordered, no duplicates</span>
+visited_stations = {<span class="str">"Ibaraki"</span>, <span class="str">"Osaka"</span>, <span class="str">"Kyoto"</span>, <span class="str">"Osaka"</span>}  <span class="cm"># duplicate dropped</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Given a lease dictionary with rent, deposit, and key money, calculate the total move-in cost.
+  <pre style="margin-top:10px;">lease = {<span class="str">"rent"</span>: <span class="num">85000</span>, <span class="str">"deposit"</span>: <span class="num">170000</span>, <span class="str">"key_money"</span>: <span class="num">85000</span>}
+
+total_move_in = <span class="fn">sum</span>(lease.values())
+<span class="fn">print</span>(<span class="str">f"Total move-in cost: ¥{total_move_in:,}"</span>)
+<span class="cm"># Total move-in cost: ¥340,000</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Build a dictionary for a lease with keys <code>rent</code>, <code>deposit</code>, <code>agency_fee</code>, and calculate the total move-in cost.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>lease = {<span class="str">"rent"</span>: <span class="num">85000</span>, <span class="str">"deposit"</span>: <span class="num">170000</span>, <span class="str">"agency_fee"</span>: <span class="num">85000</span>}
+<span class="fn">print</span>(<span class="fn">sum</span>(lease.values()))
+<span class="cm"># 340000</span></pre></div></details>
+      </li>
+      <li>Given a list of stations with repeats, convert it to a set to find how many unique stations were visited.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>stations = [<span class="str">"Osaka"</span>, <span class="str">"Kyoto"</span>, <span class="str">"Osaka"</span>, <span class="str">"Kobe"</span>]
+<span class="fn">len</span>(<span class="fn">set</span>(stations))
+<span class="cm"># 3</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="topic" id="t11">
+  <div class="topic-num">11</div>
+  <h2 class="topic-title">Data Structure Methods<span class="badge badge-beginner">Beginner</span></h2>
+  <p>Each collection type comes with its own built-in methods for adding, removing, or combining data — knowing the right method saves you from writing manual loops for things Python already handles. Lists focus on order-based operations (add/remove/insert at a position), dictionaries focus on safe key-based lookups, and sets focus on comparing groups of unique items against each other.</p>
+  <h3 class="sub">List methods</h3>
+  <pre>expenses = [<span class="num">85000</span>, <span class="num">12000</span>]
+expenses.append(<span class="num">8000</span>)
+expenses.insert(<span class="num">0</span>, <span class="num">170000</span>)
+expenses.remove(<span class="num">12000</span>)
+last = expenses.pop()
+expenses.extend([<span class="num">5000</span>, <span class="num">3000</span>])
+
+expenses.sort()                 <span class="cm"># sorts the list in place, ascending</span>
+expenses.reverse()               <span class="cm"># reverses the list in place</span>
+expenses.count(<span class="num">85000</span>)          <span class="cm"># how many times a value appears</span>
+expenses.index(<span class="num">170000</span>)          <span class="cm"># position of the first match</span>
+backup = expenses.copy()         <span class="cm"># a separate copy, not the same list</span>
+expenses.clear()                 <span class="cm"># empties the list entirely</span></pre>
+  <h3 class="sub">Dict methods</h3>
+  <pre>lease = {<span class="str">"rent"</span>: <span class="num">85000</span>, <span class="str">"deposit"</span>: <span class="num">170000</span>}
+lease.get(<span class="str">"key_money"</span>, <span class="num">0</span>)   <span class="cm"># safe lookup, default 0 if missing</span>
+lease.keys(), lease.values(), lease.items()
+lease.update({<span class="str">"agency_fee"</span>: <span class="num">85000</span>})
+
+lease.pop(<span class="str">"deposit"</span>)              <span class="cm"># removes a key and returns its value</span>
+lease.setdefault(<span class="str">"key_money"</span>, <span class="num">0</span>)  <span class="cm"># adds the key only if missing</span>
+lease.clear()                    <span class="cm"># empties the dict entirely</span></pre>
+  <h3 class="sub">Set methods</h3>
+  <pre>tokyo_pass = {<span class="str">"Shibuya"</span>, <span class="str">"Shinjuku"</span>}
+osaka_pass = {<span class="str">"Umeda"</span>, <span class="str">"Shinjuku"</span>}
+tokyo_pass.union(osaka_pass)
+tokyo_pass.intersection(osaka_pass)             <span class="cm"># {"Shinjuku"}</span>
+tokyo_pass.difference(osaka_pass)               <span class="cm"># {"Shibuya"}</span>
+tokyo_pass.symmetric_difference(osaka_pass)     <span class="cm"># {"Shibuya", "Umeda"}</span>
+
+tokyo_pass.add(<span class="str">"Ikebukuro"</span>)             <span class="cm"># adds one item</span>
+tokyo_pass.remove(<span class="str">"Shibuya"</span>)          <span class="cm"># removes an item — errors if missing</span>
+tokyo_pass.discard(<span class="str">"Ginza"</span>)           <span class="cm"># removes if present, no error if missing</span>
+tokyo_pass.clear()                    <span class="cm"># empties the set entirely</span></pre>
+  <h3 class="sub">Tuple methods</h3>
+  <p style="font-size:14px;">Tuples are immutable, so they only have two methods — nothing that could change their contents.</p>
+  <pre>fare_history = (<span class="num">210</span>, <span class="num">210</span>, <span class="num">380</span>, <span class="num">210</span>)
+fare_history.count(<span class="num">210</span>)     <span class="cm"># 3 — how many times 210 appears</span>
+fare_history.index(<span class="num">380</span>)     <span class="cm"># 2 — position of the first 380</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Two commuter passes cover overlapping stations. Find which stations are shared, and which are exclusive to each pass.
+  <pre style="margin-top:10px;">tokyo_pass = {<span class="str">"Shibuya"</span>, <span class="str">"Shinjuku"</span>}
+osaka_pass = {<span class="str">"Umeda"</span>, <span class="str">"Shinjuku"</span>}
+
+shared = tokyo_pass.intersection(osaka_pass)
+exclusive = tokyo_pass.symmetric_difference(osaka_pass)
+
+<span class="fn">print</span>(<span class="str">"Shared:"</span>, shared)
+<span class="fn">print</span>(<span class="str">"Exclusive to one pass:"</span>, exclusive)
+<span class="cm"># Shared: {'Shinjuku'}
+# Exclusive to one pass: {'Shibuya', 'Umeda'}</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Use <code>.append()</code>, <code>.pop()</code>, and <code>.insert()</code> to simulate a month where a new bill arrives and an old one is refunded.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>expenses = [<span class="num">85000</span>, <span class="num">12000</span>]
+expenses.append(<span class="num">3000</span>)     <span class="cm"># new bill arrives</span>
+expenses.pop(<span class="num">0</span>)             <span class="cm"># old bill refunded</span>
+<span class="fn">print</span>(expenses)
+<span class="cm"># [12000, 3000]</span></pre></div></details>
+      </li>
+      <li>Given two sets of stations covered by two commuter passes, find which stations are covered by both and which are exclusive to each.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>pass_a = {<span class="str">"Namba"</span>, <span class="str">"Umeda"</span>}
+pass_b = {<span class="str">"Umeda"</span>, <span class="str">"Tenma"</span>}
+<span class="fn">print</span>(pass_a.intersection(pass_b))
+<span class="fn">print</span>(pass_a.symmetric_difference(pass_b))
+<span class="cm"># {'Umeda'}
+# {'Namba', 'Tenma'}</span></pre></div></details>
+      </li>
+      <li>Given a list of monthly fares <code>[210, 380, 210, 470, 210]</code>, use <code>.sort()</code> to sort it in place, then use <code>.count()</code> to find how many rides cost exactly 210 yen.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>fares = [<span class="num">210</span>, <span class="num">380</span>, <span class="num">210</span>, <span class="num">470</span>, <span class="num">210</span>]
+fares.sort()
+<span class="fn">print</span>(fares)
+<span class="fn">print</span>(fares.count(<span class="num">210</span>))
+<span class="cm"># [210, 210, 210, 380, 470]
+# 3</span></pre></div></details>
+      </li>
+      <li>Given a lease dictionary, use <code>.setdefault()</code> to add a <code>"key_money"</code> field only if it doesn't already exist, then use <code>.pop()</code> to remove <code>"deposit"</code> and print its value.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>lease = {<span class="str">"rent"</span>: <span class="num">85000</span>, <span class="str">"deposit"</span>: <span class="num">170000</span>}
+lease.setdefault(<span class="str">"key_money"</span>, <span class="num">85000</span>)
+removed = lease.pop(<span class="str">"deposit"</span>)
+<span class="fn">print</span>(lease, removed)
+<span class="cm"># {'rent': 85000, 'key_money': 85000} 170000</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="topic" id="t12">
+  <div class="topic-num">12</div>
+  <h2 class="topic-title">Nested Data Structures<span class="badge badge-intermediate">Intermediate</span></h2>
+  <p>Real-world data is rarely flat — a list of records is usually a list of dictionaries (each dictionary being one record with named fields), and grouped data is often a dictionary where each value is itself a list. A third common shape is the <strong>2D list</strong> (a list of lists) — used for anything grid-like, such as a seating chart or a fare table between stations, where you need two coordinates (row and column) to find a value. Learning to read and update these nested shapes (accessing a value two or three levels deep) is what makes working with realistic data manageable.</p>
+  <pre>students = [
+    {<span class="str">"name"</span>: <span class="str">"Refadul"</span>, <span class="str">"course"</span>: <span class="str">"AWS Cloud Practitioner"</span>, <span class="str">"fee"</span>: <span class="num">28000</span>},
+    {<span class="str">"name"</span>: <span class="str">"Nabila"</span>, <span class="str">"course"</span>: <span class="str">"Software Mentorship"</span>, <span class="str">"fee"</span>: <span class="num">45000</span>},
+]
+<span class="kw">for</span> student <span class="kw">in</span> students:
+    <span class="fn">print</span>(student[<span class="str">"name"</span>], <span class="str">"→"</span>, student[<span class="str">"course"</span>])
+
+expenses_by_category = {
+    <span class="str">"housing"</span>: [<span class="num">85000</span>, <span class="num">170000</span>],
+    <span class="str">"food"</span>: [<span class="num">12000</span>, <span class="num">8000</span>, <span class="num">5000</span>],
+}
+expenses_by_category[<span class="str">"food"</span>].append(<span class="num">3000</span>)
+
+<span class="cm"># 2D list — a fare matrix between 3 stations (row = from, column = to)</span>
+fare_matrix = [
+    [<span class="num">0</span>,   <span class="num">150</span>, <span class="num">210</span>],   <span class="cm"># from Station A</span>
+    [<span class="num">150</span>, <span class="num">0</span>,   <span class="num">180</span>],   <span class="cm"># from Station B</span>
+    [<span class="num">210</span>, <span class="num">180</span>, <span class="num">0</span>],     <span class="cm"># from Station C</span>
+]
+fare_a_to_c = fare_matrix[<span class="num">0</span>][<span class="num">2</span>]   <span class="cm"># row 0 (Station A), column 2 (Station C) → 210</span>
+
+<span class="kw">for</span> row <span class="kw">in</span> fare_matrix:
+    <span class="kw">for</span> fare <span class="kw">in</span> row:
+        <span class="fn">print</span>(fare, end=<span class="str">"  "</span>)
+    <span class="fn">print</span>()</pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Given the <code>students</code> list above, print only students whose course fee is over 30,000 yen.
+  <pre style="margin-top:10px;"><span class="kw">for</span> student <span class="kw">in</span> students:
+    <span class="kw">if</span> student[<span class="str">"fee"</span>] > <span class="num">30000</span>:
+        <span class="fn">print</span>(student[<span class="str">"name"</span>], <span class="str">f"— ¥{student['fee']:,}"</span>)
+<span class="cm"># Nabila — ¥45,000</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Given the <code>students</code> list above, print only students whose fee is over 30000 yen.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="kw">for</span> s <span class="kw">in</span> students:
+    <span class="kw">if</span> s[<span class="str">"fee"</span>] > <span class="num">30000</span>:
+        <span class="fn">print</span>(s[<span class="str">"name"</span>])
+<span class="cm"># Nabila</span></pre></div></details>
+      </li>
+      <li>Add a new category <code>"transport"</code> to <code>expenses_by_category</code> with a starting list of two values, then append a third.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>expenses_by_category[<span class="str">"transport"</span>] = [<span class="num">4000</span>, <span class="num">3500</span>]
+expenses_by_category[<span class="str">"transport"</span>].append(<span class="num">2000</span>)
+<span class="cm"># {'transport': [4000, 3500, 2000], ...}</span></pre></div></details>
+      </li>
+      <li>Given the <code>fare_matrix</code> above, find the fare from Station B to Station C, and separately print the whole matrix as a readable grid.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>fare_b_to_c = fare_matrix[<span class="num">1</span>][<span class="num">2</span>]
+<span class="fn">print</span>(<span class="str">f"B to C: ¥{fare_b_to_c}"</span>)
+
+<span class="kw">for</span> row <span class="kw">in</span> fare_matrix:
+    <span class="fn">print</span>(row)
+<span class="cm"># B to C: ¥180
+# [0, 150, 210]
+# [150, 0, 180]
+# [210, 180, 0]</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="topic" id="t13">
+  <div class="topic-num">13</div>
+  <h2 class="topic-title">Unpacking &amp; Throwaway Variables<span class="badge badge-intermediate">Intermediate</span></h2>
+  <p>Unpacking lets you assign multiple variables from a single list or tuple in one line, instead of indexing into it repeatedly (<code>costs[0]</code>, <code>costs[1]</code>, and so on). The <code>*</code> symbol can grab "everything else" into one variable during unpacking, and by convention, an underscore (<code>_</code>) is used as a variable name when you need to unpack a value but don't actually plan to use it.</p>
+  <pre>rent, deposit, agency_fee = <span class="num">85000</span>, <span class="num">170000</span>, <span class="num">85000</span>
+
+first, *rest = [<span class="num">85000</span>, <span class="num">170000</span>, <span class="num">85000</span>, <span class="num">30000</span>]
+
+<span class="kw">def</span> <span class="fn">total_cost</span>(*costs):
+    <span class="kw">return</span> <span class="fn">sum</span>(costs)
+
+move_in_costs = [<span class="num">85000</span>, <span class="num">170000</span>, <span class="num">85000</span>]
+<span class="fn">total_cost</span>(*move_in_costs)
+
+fare_record = (<span class="num">210</span>, <span class="str">"2026-07-01"</span>, <span class="str">"Suica"</span>)
+fare, _, _ = fare_record   <span class="cm"># _ signals "intentionally ignored"</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Given a tuple of (station, arrival_time, platform), extract only the station name — the rest isn't needed.
+  <pre style="margin-top:10px;">stop_record = (<span class="str">"Shin-Osaka"</span>, <span class="str">"14:32"</span>, <span class="str">"Platform 3"</span>)
+station, _, _ = stop_record
+
+<span class="fn">print</span>(<span class="str">f"Next stop: {station}"</span>)
+<span class="cm"># Next stop: Shin-Osaka</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Unpack a tuple of four utility bills into named variables and print each with a label.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>electricity, water, gas, internet = <span class="num">8400</span>, <span class="num">3200</span>, <span class="num">4100</span>, <span class="num">5000</span>
+<span class="fn">print</span>(<span class="str">f"Electricity: ¥{electricity}"</span>)</pre></div></details>
+      </li>
+      <li>Given a tuple of (station, arrival_time, platform), unpack it keeping only the station name with <code>_</code> for the rest.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>station, _, _ = (<span class="str">"Namba"</span>, <span class="str">"09:15"</span>, <span class="str">"Platform 2"</span>)
+<span class="fn">print</span>(station)
+<span class="cm"># Namba</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 14 -->
+<section class="topic" id="t14">
+  <div class="topic-num">14</div>
+  <h2 class="topic-title">Mutability<span class="badge badge-intermediate">Intermediate</span></h2>
+  <p>Some Python types can be changed after creation (lists, dictionaries, sets — these are <strong>mutable</strong>), while others cannot (numbers, strings, tuples — these are <strong>immutable</strong>). This matters more than it first appears: if you pass a mutable object into a function and change it there, the original outside the function changes too, since both point to the same underlying data.</p>
+  <pre>expenses = [<span class="num">85000</span>, <span class="num">12000</span>]
+expenses.append(<span class="num">8000</span>)      <span class="cm"># list is mutable — changed in place</span>
+
+lease_terms = (<span class="str">"12 months"</span>, <span class="str">"no pets"</span>)
+<span class="cm"># lease_terms[0] = "6 months"  → TypeError, tuples are immutable</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> A function adds a late fee to a list of expenses. Show that the change is visible outside the function, because lists are mutable.
+  <pre style="margin-top:10px;"><span class="kw">def</span> <span class="fn">add_late_fee</span>(expense_list):
+    expense_list.append(<span class="num">2000</span>)
+
+expenses = [<span class="num">85000</span>, <span class="num">12000</span>]
+<span class="fn">add_late_fee</span>(expenses)
+
+<span class="fn">print</span>(expenses)
+<span class="cm"># [85000, 12000, 2000] — original list changed</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Explain why passing a list into a function and modifying it there also changes the original list, while passing a string does not.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="cm"># A list passed into a function is the SAME object in memory —
+# changing it inside the function changes the original.
+# A string can't be changed in place at all (immutable), so
+# reassigning it inside a function only affects the local copy.</span></pre></div></details>
+      </li>
+      <li>Try reassigning an element inside a tuple and note the exact error Python gives.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>lease_terms = (<span class="str">"12 months"</span>, <span class="str">"no pets"</span>)
+lease_terms[<span class="num">0</span>] = <span class="str">"6 months"</span>
+<span class="cm"># TypeError: 'tuple' object does not support item assignment</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 15 -->
+<section class="topic" id="t15">
+  <div class="topic-num">15</div>
+  <h2 class="topic-title">Slicing &amp; Repetition<span class="badge badge-intermediate">Intermediate</span></h2>
+  <p>Slicing lets you pull out a sub-section of a list or string using <code>[start:stop:step]</code> notation, without writing a loop — a negative step reverses the sequence, and negative indexes count from the end. Slice assignment takes this further, letting you replace a whole chunk of a list in place. Repetition (<code>*</code>) is a quick way to build a list or string made of the same value repeated many times.</p>
+  <pre>fares = [<span class="num">150</span>, <span class="num">210</span>, <span class="num">280</span>, <span class="num">380</span>, <span class="num">470</span>]
+
+fares[::<span class="num">2</span>]        <span class="cm"># [150, 280, 470] — every 2nd element</span>
+fares[::-<span class="num">1</span>]       <span class="cm"># reversed</span>
+fares[-<span class="num">2</span>:]        <span class="cm"># last two fares</span>
+
+fares[<span class="num">1</span>:<span class="num">3</span>] = [<span class="num">999</span>, <span class="num">888</span>]   <span class="cm"># slice assignment — replace a chunk in place</span>
+
+empty_month = [<span class="num">0</span>] * <span class="num">12</span>     <span class="cm"># 12 months of zero rent, as a template</span>
+divider = <span class="str">"-"</span> * <span class="num">30</span>         <span class="cm"># a 30-character receipt divider line</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Given a list of 6 months of rent payments, get the most recent 3 months and print them from newest to oldest.
+  <pre style="margin-top:10px;">rent_history = [<span class="num">85000</span>, <span class="num">85000</span>, <span class="num">87000</span>, <span class="num">87000</span>, <span class="num">87000</span>, <span class="num">90000</span>]
+
+recent_three = rent_history[-<span class="num">3</span>:]
+newest_first = recent_three[::-<span class="num">1</span>]
+
+<span class="fn">print</span>(newest_first)
+<span class="cm"># [90000, 87000, 87000]</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Given a list of monthly rent payments, use slicing to get the most recent 3 months and print them in reverse order.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>rent_history = [<span class="num">85000</span>, <span class="num">85000</span>, <span class="num">87000</span>, <span class="num">87000</span>, <span class="num">90000</span>]
+<span class="fn">print</span>(rent_history[-<span class="num">3</span>:][::-<span class="num">1</span>])
+<span class="cm"># [90000, 87000, 87000]</span></pre></div></details>
+      </li>
+      <li>Initialize a 12-item list of zeros for a year of expense tracking using repetition.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>year_expenses = [<span class="num">0</span>] * <span class="num">12</span>
+<span class="fn">print</span>(<span class="fn">len</span>(year_expenses))
+<span class="cm"># 12</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 16 -->
+<section class="topic" id="t16">
+  <div class="topic-num">16</div>
+  <h2 class="topic-title">Comprehensions<span class="badge badge-intermediate">Intermediate</span></h2>
+  <p>A comprehension builds a new list, dictionary, or set in a single, readable line instead of writing a full loop with an empty container and repeated <code>.append()</code> calls. There are two distinct patterns worth telling apart: filtering (an <code>if</code> at the end drops some items entirely) versus transforming every item (an <code>if...else</code> in the middle changes each item's value but keeps all of them).</p>
+  <pre>prices = [<span class="num">480</span>, <span class="num">980</span>, <span class="num">1500</span>, <span class="num">320</span>]
+
+with_tax = [p * <span class="num">1.1</span> <span class="kw">for</span> p <span class="kw">in</span> prices]
+affordable = [p <span class="kw">for</span> p <span class="kw">in</span> prices <span class="kw">if</span> p < <span class="num">1000</span>]           <span class="cm"># filter</span>
+labels = [<span class="str">"expensive"</span> <span class="kw">if</span> p > <span class="num">1000</span> <span class="kw">else</span> <span class="str">"cheap"</span> <span class="kw">for</span> p <span class="kw">in</span> prices]  <span class="cm"># transform</span>
+
+items = [<span class="str">"bento"</span>, <span class="str">"onigiri"</span>, <span class="str">"tea"</span>]
+price_map = {item: price <span class="kw">for</span> item, price <span class="kw">in</span> <span class="fn">zip</span>(items, prices)}   <span class="cm"># dict comprehension</span>
+unique_price_tiers = {p // <span class="num">500</span> <span class="kw">for</span> p <span class="kw">in</span> prices}                <span class="cm"># set comprehension</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Given a list of exam scores, label each one "pass" or "fail" using a 60-point threshold, in one line.
+  <pre style="margin-top:10px;">scores = [<span class="num">45</span>, <span class="num">72</span>, <span class="num">60</span>, <span class="num">88</span>, <span class="num">33</span>]
+
+results = [<span class="str">"pass"</span> <span class="kw">if</span> s >= <span class="num">60</span> <span class="kw">else</span> <span class="str">"fail"</span> <span class="kw">for</span> s <span class="kw">in</span> scores]
+<span class="fn">print</span>(results)
+<span class="cm"># ['fail', 'pass', 'pass', 'pass', 'fail']</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Given a list of item prices, write a list comprehension that returns only prices over 1000 yen.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>prices = [<span class="num">480</span>, <span class="num">1200</span>, <span class="num">320</span>, <span class="num">1500</span>]
+expensive = [p <span class="kw">for</span> p <span class="kw">in</span> prices <span class="kw">if</span> p > <span class="num">1000</span>]
+<span class="fn">print</span>(expensive)
+<span class="cm"># [1200, 1500]</span></pre></div></details>
+      </li>
+      <li>Use a conditional comprehension to label a list of exam scores as "pass" or "fail" based on a 60-point threshold.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>scores = [<span class="num">50</span>, <span class="num">65</span>, <span class="num">90</span>]
+results = [<span class="str">"pass"</span> <span class="kw">if</span> s >= <span class="num">60</span> <span class="kw">else</span> <span class="str">"fail"</span> <span class="kw">for</span> s <span class="kw">in</span> scores]
+<span class="cm"># ['fail', 'pass', 'pass']</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 17 -->
+<section class="topic" id="t17">
+  <div class="topic-num">17</div>
+  <h2 class="topic-title">Functional Tools &amp; Lambda<span class="badge badge-intermediate">Intermediate</span></h2>
+  <p>A <code>lambda</code> is a small, unnamed function written in a single line — useful when you need a quick, throwaway piece of logic without the ceremony of a full <code>def</code> block, especially as an argument to another function. <code>map()</code> applies a function to every item in a collection, <code>filter()</code> keeps only the items that pass a test, and <code>all()</code>/<code>any()</code> check whether a condition holds for every item or just one, respectively.</p>
+  <pre>prices = [<span class="num">480</span>, <span class="num">980</span>, <span class="num">1500</span>, <span class="num">320</span>]
+
+add_tax = <span class="kw">lambda</span> price: price * <span class="num">1.1</span>
+add_tax(<span class="num">480</span>)   <span class="cm"># 528.0</span>
+
+with_tax = <span class="fn">list</span>(<span class="fn">map</span>(add_tax, prices))
+cheap_items = <span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> p: p < <span class="num">1000</span>, prices))
+
+<span class="fn">all</span>(p > <span class="num">0</span> <span class="kw">for</span> p <span class="kw">in</span> prices)     <span class="cm"># True — every price is positive</span>
+<span class="fn">any</span>(p > <span class="num">1000</span> <span class="kw">for</span> p <span class="kw">in</span> prices)  <span class="cm"># True — at least one over 1000 yen</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Check whether a list of exam scores contains at least one failing grade below 60.
+  <pre style="margin-top:10px;">scores = [<span class="num">72</span>, <span class="num">88</span>, <span class="num">55</span>, <span class="num">91</span>]
+
+has_failure = <span class="fn">any</span>(s < <span class="num">60</span> <span class="kw">for</span> s <span class="kw">in</span> scores)
+<span class="fn">print</span>(<span class="str">f"Has a failing grade: {has_failure}"</span>)
+<span class="cm"># Has a failing grade: True</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Rewrite <code>with_tax</code> above as a list comprehension instead of <code>map()</code>, and compare readability.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>prices = [<span class="num">480</span>, <span class="num">980</span>]
+with_tax = [p * <span class="num">1.1</span> <span class="kw">for</span> p <span class="kw">in</span> prices]
+<span class="cm"># same result as list(map(lambda p: p * 1.1, prices)),
+# but reads more directly without a separate lambda</span></pre></div></details>
+      </li>
+      <li>Use <code>any()</code> to check if a list of exam scores contains at least one failing grade below 60.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>scores = [<span class="num">70</span>, <span class="num">55</span>, <span class="num">82</span>]
+<span class="fn">any</span>(s < <span class="num">60</span> <span class="kw">for</span> s <span class="kw">in</span> scores)
+<span class="cm"># True</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 18 -->
+<section class="topic" id="t18">
+  <div class="topic-num">18</div>
+  <h2 class="topic-title">Sorting with key= and reverse=<span class="badge badge-intermediate">Intermediate</span></h2>
+  <p><code>sorted()</code> works out of the box on simple lists of numbers or strings, but for more complex data — like a list of dictionaries — you need to tell it exactly what to sort by. The <code>key=</code> argument takes a function (often a <code>lambda</code>) that says "use this value for comparison," and <code>reverse=True</code> flips the order from ascending to descending.</p>
+  <pre>students = [
+    {<span class="str">"name"</span>: <span class="str">"Refadul"</span>, <span class="str">"fee"</span>: <span class="num">28000</span>},
+    {<span class="str">"name"</span>: <span class="str">"Nabila"</span>, <span class="str">"fee"</span>: <span class="num">45000</span>},
+]
+<span class="fn">sorted</span>(students, key=<span class="kw">lambda</span> s: s[<span class="str">"fee"</span>])                    <span class="cm"># ascending by fee</span>
+<span class="fn">sorted</span>(students, key=<span class="kw">lambda</span> s: s[<span class="str">"fee"</span>], reverse=<span class="kw">True</span>)   <span class="cm"># highest fee first</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Sort the CodeBridge student roster so the highest-fee course appears first.
+  <pre style="margin-top:10px;">students = [
+    {<span class="str">"name"</span>: <span class="str">"Refadul"</span>, <span class="str">"fee"</span>: <span class="num">28000</span>},
+    {<span class="str">"name"</span>: <span class="str">"Nabila"</span>, <span class="str">"fee"</span>: <span class="num">45000</span>},
+]
+
+ranked = <span class="fn">sorted</span>(students, key=<span class="kw">lambda</span> s: s[<span class="str">"fee"</span>], reverse=<span class="kw">True</span>)
+<span class="kw">for</span> s <span class="kw">in</span> ranked:
+    <span class="fn">print</span>(s[<span class="str">"name"</span>], s[<span class="str">"fee"</span>])
+<span class="cm"># Nabila 45000
+# Refadul 28000</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Sort a list of dicts representing courses by fee, both ascending and descending.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="fn">sorted</span>(students, key=<span class="kw">lambda</span> s: s[<span class="str">"fee"</span>])
+<span class="fn">sorted</span>(students, key=<span class="kw">lambda</span> s: s[<span class="str">"fee"</span>], reverse=<span class="kw">True</span>)</pre></div></details>
+      </li>
+      <li>Sort a list of monthly expenses by amount, largest first, using <code>key=</code> and <code>reverse=True</code> together.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>expenses = [<span class="num">85000</span>, <span class="num">12000</span>, <span class="num">45000</span>]
+<span class="fn">sorted</span>(expenses, reverse=<span class="kw">True</span>)
+<span class="cm"># [85000, 45000, 12000]</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 19 -->
+<section class="topic" id="t19">
+  <div class="topic-num">19</div>
+  <h2 class="topic-title">Scope, Namespaces &amp; Nested Functions<span class="badge badge-intermediate">Intermediate</span></h2>
+  <p>Scope is about where a variable "lives" and where it can be seen from. Variables created inside a function are local to it and disappear once the function finishes; variables created outside any function are global and visible everywhere. Trying to modify a global variable from inside a function requires the <code>global</code> keyword, and a function nested inside another function needs <code>nonlocal</code> to modify a variable from its enclosing (but not fully global) scope.</p>
+  <pre>exchange_rate = <span class="num">0.0067</span>   <span class="cm"># global</span>
+conversions_done = <span class="num">0</span>
+
+<span class="kw">def</span> <span class="fn">convert_to_usd</span>(yen):
+    <span class="kw">global</span> conversions_done
+    conversions_done += <span class="num">1</span>
+    <span class="kw">return</span> yen * exchange_rate
+
+<span class="kw">def</span> <span class="fn">rent_tracker</span>():
+    total = <span class="num">0</span>
+    <span class="kw">def</span> <span class="fn">add_payment</span>(amount):
+        <span class="kw">nonlocal</span> total
+        total += amount
+        <span class="kw">return</span> total
+    <span class="kw">return</span> add_payment
+
+track = <span class="fn">rent_tracker</span>()
+track(<span class="num">85000</span>)   <span class="cm"># 85000</span>
+track(<span class="num">85000</span>)   <span class="cm"># 170000 — total remembered between calls</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Build a rent tracker that remembers a running total across multiple payments, using a nested function.
+  <pre style="margin-top:10px;"><span class="kw">def</span> <span class="fn">rent_tracker</span>():
+    total = <span class="num">0</span>
+    <span class="kw">def</span> <span class="fn">add_payment</span>(amount):
+        <span class="kw">nonlocal</span> total
+        total += amount
+        <span class="kw">return</span> total
+    <span class="kw">return</span> add_payment
+
+track = <span class="fn">rent_tracker</span>()
+<span class="fn">print</span>(track(<span class="num">85000</span>))
+<span class="fn">print</span>(track(<span class="num">85000</span>))
+<span class="cm"># 85000
+# 170000</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Write a function that increments a global <code>total_transactions</code> counter each time it's called.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>total_transactions = <span class="num">0</span>
+<span class="kw">def</span> <span class="fn">log_transaction</span>():
+    <span class="kw">global</span> total_transactions
+    total_transactions += <span class="num">1</span>
+
+<span class="fn">log_transaction</span>(); <span class="fn">log_transaction</span>()
+<span class="fn">print</span>(total_transactions)
+<span class="cm"># 2</span></pre></div></details>
+      </li>
+      <li>Build a small nested-function counter that counts train rides taken, using <code>nonlocal</code>.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="kw">def</span> <span class="fn">ride_counter</span>():
+    count = <span class="num">0</span>
+    <span class="kw">def</span> <span class="fn">add_ride</span>():
+        <span class="kw">nonlocal</span> count
+        count += <span class="num">1</span>
+        <span class="kw">return</span> count
+    <span class="kw">return</span> add_ride
+
+track = <span class="fn">ride_counter</span>()
+<span class="fn">print</span>(track(), track())
+<span class="cm"># 1 2</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 20 -->
+<section class="topic" id="t20">
+  <div class="topic-num">20</div>
+  <h2 class="topic-title">Docstrings &amp; Type Hints<span class="badge badge-beginner">Beginner</span></h2>
+  <p>A docstring is a string placed right after a function's definition line that explains what the function does, what it expects, and what it returns — different from a regular comment because tools like <code>help()</code> can read and display it. Type hints are a lighter-weight companion: optional annotations on the parameters and return value (<code>def f(x: int) -> float:</code>) that document intent without Python actually enforcing them. Both exist for the same reason — helping the next reader (often future-you) understand a function without reading its full body.</p>
+  <pre><span class="kw">def</span> <span class="fn">calculate_total_rent</span>(monthly_rent: <span class="kw">int</span>, months: <span class="kw">int</span>) -> <span class="kw">int</span>:
+    <span class="str">"""
+    Calculate total rent paid over a lease period.
+
+    Args:
+        monthly_rent (int): Rent in yen per month.
+        months (int): Number of months on the lease.
+
+    Returns:
+        int: Total rent paid in yen.
+    """</span>
+    <span class="kw">return</span> monthly_rent * months</pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Write a documented, type-hinted function that splits a utility bill evenly between roommates.
+  <pre style="margin-top:10px;"><span class="kw">def</span> <span class="fn">split_bill</span>(total_yen: <span class="kw">int</span>, roommates: <span class="kw">int</span>) -> <span class="kw">float</span>:
+    <span class="str">"""
+    Split a utility bill evenly between roommates.
+
+    Args:
+        total_yen (int): Total bill amount in yen.
+        roommates (int): Number of people sharing the bill.
+
+    Returns:
+        float: Each roommate's share in yen.
+    """</span>
+    <span class="kw">return</span> total_yen / roommates
+
+<span class="fn">print</span>(<span class="fn">split_bill</span>(<span class="num">9000</span>, <span class="num">3</span>))
+<span class="cm"># 3000.0</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Add a proper docstring and type hints to a function that calculates a utility bill split between roommates.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="kw">def</span> <span class="fn">split_bill</span>(total_yen: <span class="kw">int</span>, roommates: <span class="kw">int</span>) -> <span class="kw">float</span>:
+    <span class="str">"""Split a bill evenly. Returns each roommate's share in yen."""</span>
+    <span class="kw">return</span> total_yen / roommates</pre></div></details>
+      </li>
+      <li>Run <code>help()</code> on your function and confirm the docstring displays correctly.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre><span class="fn">help</span>(split_bill)
+<span class="cm"># Help on function split_bill in module __main__:
+# split_bill(total_yen: int, roommates: int) -> float
+#     Split a bill evenly. Returns each roommate's share in yen.</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 21 -->
+<section class="topic" id="t21">
+  <div class="topic-num">21</div>
+  <h2 class="topic-title">Debugging &amp; assert<span class="badge badge-intermediate">Intermediate</span></h2>
+  <p>Debugging is the skill of figuring out why code isn't doing what you expect. A quick <code>print()</code> of a variable's value or type is often the fastest way to check an assumption, and Python's error messages (tracebacks) point you to the exact line and type of problem if you read them carefully. An <code>assert</code> statement is a lightweight sanity check — it stops the program immediately with a clear message if a condition you expect to be true turns out to be false.</p>
+  <pre>rent = <span class="num">85000</span>
+utilities = <span class="str">"12000"</span>   <span class="cm"># bug: this should be an int, not a string</span>
+<span class="fn">print</span>(<span class="str">"DEBUG:"</span>, <span class="fn">type</span>(rent), <span class="fn">type</span>(utilities))
+
+<span class="cm"># total = rent + utilities
+# TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
+
+<span class="kw">assert</span> rent > <span class="num">0</span>, <span class="str">"Rent must be positive"</span>
+<span class="kw">assert</span> rent <= <span class="num">300000</span>, <span class="str">"Rent exceeds budget"</span></pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Before calculating a fare total, add a sanity check that the fare is never negative — and see what happens when it is.
+  <pre style="margin-top:10px;">fare = -<span class="num">50</span>   <span class="cm"># bad scraped value</span>
+
+<span class="kw">assert</span> fare >= <span class="num">0</span>, <span class="str">"Fare cannot be negative"</span>
+<span class="fn">print</span>(<span class="str">f"Fare: ¥{fare}"</span>)
+
+<span class="cm"># AssertionError: Fare cannot be negative
+# (the print line never runs)</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Intentionally add a string and an int in your own script, run it, and identify the exact line reported in the traceback.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>rent = <span class="num">85000</span>
+utilities = <span class="str">"12000"</span>
+total = rent + utilities
+<span class="cm"># TypeError: unsupported operand type(s) for +: 'int' and 'str'
+# The traceback names the exact line: "total = rent + utilities"</span></pre></div></details>
+      </li>
+      <li>Add an <code>assert</code> to a fare calculation confirming the fare is never negative, then break it deliberately to see the message.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>fare = -<span class="num">20</span>
+<span class="kw">assert</span> fare >= <span class="num">0</span>, <span class="str">"Fare cannot be negative"</span>
+<span class="cm"># AssertionError: Fare cannot be negative</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 22 -->
+<section class="topic" id="t22">
+  <div class="topic-num">22</div>
+  <h2 class="topic-title">Useful Built-in Helpers<span class="badge badge-beginner">Beginner</span></h2>
+  <p><code>enumerate()</code> and <code>zip()</code> solve two extremely common looping needs that come up constantly once you're past the basics: getting a running counter alongside each item (instead of manually tracking an index), and stepping through two lists together, item by item, instead of indexing into both separately. Paired with <code>len()</code>, <code>sum()</code>, <code>min()</code>, and <code>max()</code>, these are the small tools that make everyday loops shorter and far less error-prone.</p>
+  <pre>fares = [<span class="num">210</span>, <span class="num">150</span>, <span class="num">380</span>, <span class="num">470</span>]
+
+<span class="kw">for</span> i, fare <span class="kw">in</span> <span class="fn">enumerate</span>(fares, start=<span class="num">1</span>):
+    <span class="fn">print</span>(<span class="str">f"Trip {i}: ¥{fare}"</span>)
+
+stations = [<span class="str">"A"</span>, <span class="str">"B"</span>, <span class="str">"C"</span>, <span class="str">"D"</span>]
+<span class="kw">for</span> station, fare <span class="kw">in</span> <span class="fn">zip</span>(stations, fares):
+    <span class="fn">print</span>(station, fare)
+
+<span class="fn">len</span>(fares), <span class="fn">sum</span>(fares), <span class="fn">min</span>(fares), <span class="fn">max</span>(fares)</pre>
+  <div class="callout"><span class="label">Solved example</span>
+  <strong>Problem:</strong> Given a list of 5 grocery prices, print the total, cheapest item, and most expensive item.
+  <pre style="margin-top:10px;">prices = [<span class="num">480</span>, <span class="num">150</span>, <span class="num">980</span>, <span class="num">320</span>, <span class="num">1500</span>]
+
+<span class="fn">print</span>(<span class="str">f"Total: ¥{sum(prices)}"</span>)
+<span class="fn">print</span>(<span class="str">f"Cheapest: ¥{min(prices)}"</span>)
+<span class="fn">print</span>(<span class="str">f"Most expensive: ¥{max(prices)}"</span>)
+<span class="cm"># Total: ¥3430
+# Cheapest: ¥150
+# Most expensive: ¥1500</span></pre></div>
+  <div class="practice"><span class="label">Practice</span>
+    <ol>
+      <li>Given a list of 5 grocery prices, print the total, cheapest, and most expensive using built-in functions.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>prices = [<span class="num">300</span>, <span class="num">750</span>, <span class="num">120</span>, <span class="num">980</span>, <span class="num">410</span>]
+<span class="fn">print</span>(<span class="fn">sum</span>(prices), <span class="fn">min</span>(prices), <span class="fn">max</span>(prices))
+<span class="cm"># 2560 120 980</span></pre></div></details>
+      </li>
+      <li>Given a list of stations and a list of arrival times, use <code>zip()</code> to print each station with its arrival time.
+        <details class="answer-inline"><summary>Show answer</summary><div class="answer-body"><pre>stations = [<span class="str">"Namba"</span>, <span class="str">"Umeda"</span>]
+times = [<span class="str">"09:00"</span>, <span class="str">"09:15"</span>]
+<span class="kw">for</span> s, t <span class="kw">in</span> <span class="fn">zip</span>(stations, times):
+    <span class="fn">print</span>(<span class="str">f"{s}: {t}"</span>)
+<span class="cm"># Namba: 09:00
+# Umeda: 09:15</span></pre></div></details>
+      </li>
+    </ol>
+  </div>
+</section>
+
+</div>
+
+<div class="wrap">
+  <div class="appendix-header">
+    <h2>Final Cheat Sheet</h2>
+    <p>A printable, one-scroll syntax reference — every core pattern from the note, grouped by category. No explanations, just the shapes to remember.</p>
+  </div>
+
+  <div class="final-cheatsheet">
+    <div class="fc-card">
+      <h4>Variables &amp; Types</h4>
+      <pre>x = <span class="num">10</span>                <span class="cm"># int</span>
+x = <span class="num">10.5</span>              <span class="cm"># float</span>
+x = <span class="str">"text"</span>            <span class="cm"># str</span>
+x = <span class="kw">True</span>              <span class="cm"># bool</span>
+x = <span class="kw">None</span>              <span class="cm"># no value</span>
+<span class="fn">int</span>(<span class="str">"10"</span>), <span class="fn">str</span>(<span class="num">10</span>), <span class="fn">float</span>(<span class="str">"1.5"</span>)</pre>
+    </div>
+
+    <div class="fc-card">
+      <h4>Numbers</h4>
+      <pre>a // b     <span class="cm"># floor division</span>
+a % b      <span class="cm"># remainder</span>
+<span class="fn">round</span>(x, <span class="num">2</span>)
+<span class="fn">bin</span>(x), <span class="fn">hex</span>(x), <span class="fn">oct</span>(x)</pre>
+    </div>
+
+    <div class="fc-card">
+      <h4>Operators</h4>
+      <pre>a <span class="kw">if</span> cond <span class="kw">else</span> b        <span class="cm"># ternary</span>
+(x := expr)                <span class="cm"># walrus</span>
+<span class="num">0</span> < x < <span class="num">10</span>                <span class="cm"># chained</span>
+x <span class="kw">in</span> collection            <span class="cm"># membership</span></pre>
+    </div>
+
+    <div class="fc-card">
+      <h4>Strings</h4>
+      <pre>s.strip(), s.split(<span class="str">","</span>), <span class="str">"-"</span>.join(list)
+s.upper(), s.replace(<span class="str">"a"</span>,<span class="str">"b"</span>)
+<span class="str">f"{name} is {age}"</span>
+<span class="str">"a"</span> <span class="kw">in</span> s              <span class="cm"># substring check</span>
+<span class="kw">r</span><span class="str">"C:\path"</span>            <span class="cm"># raw string</span></pre>
+    </div>
+
+    <div class="fc-card">
+      <h4>Control Flow</h4>
+      <pre><span class="kw">while</span> cond:
+    ...
+<span class="kw">for</span> item <span class="kw">in</span> collection:
+    <span class="kw">if</span> x: <span class="kw">continue</span>
+    <span class="kw">if</span> y: <span class="kw">break</span></pre>
+    </div>
+
+    <div class="fc-card">
+      <h4>Collections</h4>
+      <pre>[<span class="num">1</span>,<span class="num">2</span>]          <span class="cm"># list — ordered, mutable</span>
+(<span class="num">1</span>,<span class="num">2</span>)          <span class="cm"># tuple — ordered, fixed</span>
+{<span class="str">"k"</span>:<span class="str">"v"</span>}       <span class="cm"># dict — key/value</span>
+{<span class="num">1</span>,<span class="num">2</span>}          <span class="cm"># set — unique, unordered</span></pre>
+    </div>
+
+    <div class="fc-card">
+      <h4>Collection Methods</h4>
+      <pre>lst.append(x), lst.pop(), lst.insert(<span class="num">0</span>,x)
+d.get(k, default), d.items()
+s1.union(s2), s1.intersection(s2)
+s1.symmetric_difference(s2)</pre>
+    </div>
+
+    <div class="fc-card">
+      <h4>Unpacking</h4>
+      <pre>a, b, c = <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>
+first, *rest = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>]
+a, _, c = (<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>)   <span class="cm"># ignore with _</span></pre>
+    </div>
+
+    <div class="fc-card">
+      <h4>Slicing &amp; Repetition</h4>
+      <pre>lst[start:stop:step]
+lst[::-<span class="num">1</span>]        <span class="cm"># reversed</span>
+lst[-<span class="num">2</span>:]         <span class="cm"># last 2</span>
+[<span class="num">0</span>] * <span class="num">5</span>, <span class="str">"-"</span> * <span class="num">10</span></pre>
+    </div>
+
+    <div class="fc-card">
+      <h4>Comprehensions</h4>
+      <pre>[x <span class="kw">for</span> x <span class="kw">in</span> lst <span class="kw">if</span> cond]        <span class="cm"># filter</span>
+[a <span class="kw">if</span> cond <span class="kw">else</span> b <span class="kw">for</span> x <span class="kw">in</span> lst]  <span class="cm"># transform</span>
+{k:v <span class="kw">for</span> k,v <span class="kw">in</span> pairs}</pre>
+    </div>
+
+    <div class="fc-card">
+      <h4>Functional &amp; Sorting</h4>
+      <pre><span class="kw">lambda</span> x: x * <span class="num">2</span>
+<span class="fn">map</span>(fn, lst), <span class="fn">filter</span>(fn, lst)
+<span class="fn">all</span>(cond <span class="kw">for</span> x <span class="kw">in</span> lst), <span class="fn">any</span>(...)
+<span class="fn">sorted</span>(lst, key=fn, reverse=<span class="kw">True</span>)</pre>
+    </div>
+
+    <div class="fc-card">
+      <h4>Scope &amp; Functions</h4>
+      <pre><span class="kw">global</span> x       <span class="cm"># modify outer/global var</span>
+<span class="kw">nonlocal</span> x     <span class="cm"># modify enclosing (not global)</span>
+<span class="kw">def</span> f(x: <span class="kw">int</span>) -> <span class="kw">int</span>:
+    <span class="str">"""Docstring here."""</span></pre>
+    </div>
+
+    <div class="fc-card">
+      <h4>Debugging &amp; Helpers</h4>
+      <pre><span class="kw">assert</span> cond, <span class="str">"message"</span>
+<span class="fn">enumerate</span>(lst, start=<span class="num">1</span>)
+<span class="fn">zip</span>(list_a, list_b)
+<span class="fn">len</span>, <span class="fn">sum</span>, <span class="fn">min</span>, <span class="fn">max</span></pre>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+<footer>CodeBridge Japan · Python Fundamentals Reference</footer>
+</div>
+
+</body>
+</html>

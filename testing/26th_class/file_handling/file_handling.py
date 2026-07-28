@@ -1,0 +1,16 @@
+# file = open(r"D:\code\Week\26th_class\file_handling\rocky.txt", "r")
+# print(file.read())
+# content=file.read()
+# print(content)
+# file.close()
+
+file = open(r"D:\code\Week\26th_class\file_handling\rocky.txt", "r")
+# first_line=file.readline()
+# second_line=file.readline()
+# third_line=file.readline()
+# print(first_line)
+# print(second_line)
+# print(third_line)
+
+line=file.readlines()
+print(line)
