@@ -1,0 +1,5 @@
+    print(i.isalnum())
+            print(s.isalpha())
+            print(s.isdigit())
+            print(s.islower())
+            print(s.isupper())
