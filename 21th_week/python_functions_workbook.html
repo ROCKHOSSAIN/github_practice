@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Functions — Real-Life Problem Workbook</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #F7F6F2;
+  --surface:   #FFFFFF;
+  --border:    #E4E2DC;
+  --text:      #1A1916;
+  --text-dim:  #5A584F;
+  --muted:     #9B9890;
+
+  /* concept colors */
+  --c-basic:   #2563EB;  /* normal function — blue */
+  --c-pos:     #059669;  /* positional — green */
+  --c-def:     #D97706;  /* default — amber */
+  --c-args:    #7C3AED;  /* *args — violet */
+  --c-kwargs:  #DB2777;  /* **kwargs — pink */
+  --c-return:  #DC2626;  /* return — red */
+
+  --c-basic-bg:   #EFF6FF;
+  --c-pos-bg:     #ECFDF5;
+  --c-def-bg:     #FFFBEB;
+  --c-args-bg:    #F5F3FF;
+  --c-kwargs-bg:  #FDF2F8;
+  --c-return-bg:  #FEF2F2;
+
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Plus Jakarta Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ── TOP NAV ── */
+.topnav {
+  position: sticky; top: 0;
+  background: rgba(247,246,242,.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+}
+
+.topnav-brand {
+  font-weight: 800;
+  font-size: 13px;
+  white-space: nowrap;
+  padding: 16px 20px 16px 0;
+  border-right: 1px solid var(--border);
+  margin-right: 16px;
+  letter-spacing: -.01em;
+}
+
+.topnav a {
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 18px 14px;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all .15s;
+  color: var(--text-dim);
+}
+.topnav a:hover { color: var(--text); }
+.topnav a.t-basic  { color: var(--c-basic);  } .topnav a.t-basic:hover  { border-bottom-color: var(--c-basic);  }
+.topnav a.t-pos    { color: var(--c-pos);    } .topnav a.t-pos:hover    { border-bottom-color: var(--c-pos);    }
+.topnav a.t-def    { color: var(--c-def);    } .topnav a.t-def:hover    { border-bottom-color: var(--c-def);    }
+.topnav a.t-args   { color: var(--c-args);   } .topnav a.t-args:hover   { border-bottom-color: var(--c-args);   }
+.topnav a.t-kwargs { color: var(--c-kwargs); } .topnav a.t-kwargs:hover { border-bottom-color: var(--c-kwargs); }
+.topnav a.t-return { color: var(--c-return); } .topnav a.t-return:hover { border-bottom-color: var(--c-return); }
+.topnav a.t-hw     { color: #1A1916; background: #1A1916; color: #F7F6F2; border-radius: 6px; margin-left: 8px; padding: 8px 14px; border-bottom: none; }
+
+/* ── LAYOUT ── */
+.wrap { max-width: 860px; margin: 0 auto; padding: 56px 32px 100px; }
+
+/* ── PAGE TITLE ── */
+.page-title {
+  margin-bottom: 56px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+.page-title h1 { font-size: clamp(28px,5vw,42px); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+.page-title p  { color: var(--text-dim); margin-top: 12px; font-size: 15px; max-width: 560px; }
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.concept-tag {
+  font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 4px;
+}
+.tag-basic  { background: var(--c-basic-bg);  color: var(--c-basic);  }
+.tag-pos    { background: var(--c-pos-bg);    color: var(--c-pos);    }
+.tag-def    { background: var(--c-def-bg);    color: var(--c-def);    }
+.tag-args   { background: var(--c-args-bg);   color: var(--c-args);   }
+.tag-kwargs { background: var(--c-kwargs-bg); color: var(--c-kwargs); }
+.tag-return { background: var(--c-return-bg); color: var(--c-return); }
+
+/* ── CHAPTER HEADER ── */
+.chapter {
+  margin-bottom: 64px;
+  scroll-margin-top: 72px;
+}
+.chapter-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 6px; margin-bottom: 14px;
+}
+.chapter h2 {
+  font-size: 26px; font-weight: 800; letter-spacing: -.02em;
+  margin-bottom: 8px;
+}
+.chapter > p { color: var(--text-dim); font-size: 14.5px; margin-bottom: 24px; max-width: 640px; }
+
+/* ── PROBLEM CARD ── */
+.prob-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.prob-head {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+}
+.prob-icon { font-size: 26px; flex-shrink: 0; }
+.prob-meta { flex: 1; }
+.prob-industry { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.prob-title { font-size: 16px; font-weight: 700; }
+.prob-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+
+.prob-body { padding: 20px 22px; }
+.prob-body p { font-size: 14px; color: var(--text-dim); margin-bottom: 14px; }
+
+/* explanation box */
+.explain {
+  background: #FAFAF8;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--c-basic);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 16px;
+  margin: 14px 0;
+  font-size: 13.5px;
+}
+.explain.green  { border-left-color: var(--c-pos);    background: #F0FDF4; }
+.explain.amber  { border-left-color: var(--c-def);    background: #FFFDF0; }
+.explain.violet { border-left-color: var(--c-args);   background: #FAF5FF; }
+.explain.pink   { border-left-color: var(--c-kwargs); background: #FFF0F9; }
+.explain.red    { border-left-color: var(--c-return); background: #FFF5F5; }
+.explain strong { color: var(--text); }
+.explain code { font-family: var(--mono); font-size: 12.5px; background: rgba(0,0,0,.06); padding: 1px 5px; border-radius: 3px; }
+
+/* ── CODE BLOCK ── */
+.codeblock {
+  background: #1C1B19;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 14px 0;
+}
+.codeblock-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  background: rgba(255,255,255,.03);
+}
+.codeblock-bar-left { display: flex; align-items: center; gap: 8px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; }
+.dot-r { background: #FF5F57; } .dot-y { background: #FFBD2E; } .dot-g { background: #28C840; }
+.codeblock-file { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,.4); }
+.codeblock-label { font-family: var(--mono); font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+.lbl-basic  { background: rgba(37,99,235,.25); color: #93C5FD; }
+.lbl-pos    { background: rgba(5,150,105,.25);  color: #6EE7B7; }
+.lbl-def    { background: rgba(217,119,6,.25);  color: #FCD34D; }
+.lbl-args   { background: rgba(124,58,237,.25); color: #C4B5FD; }
+.lbl-kwargs { background: rgba(219,39,119,.25); color: #F9A8D4; }
+.lbl-return { background: rgba(220,38,38,.25);  color: #FCA5A5; }
+
+pre {
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.75;
+  color: #E5E3DC;
+}
+
+/* syntax */
+.kw  { color: #FF7B72; }
+.fn  { color: #D2A8FF; }
+.st  { color: #A5D6FF; }
+.cm  { color: #6E7681; font-style: italic; }
+.nb  { color: #79C0FF; }
+.cl  { color: #FFA657; }
+.dc  { color: #7EE787; font-style: italic; }
+.hl  { background: rgba(255,255,100,.08); display: inline; border-radius: 2px; }
+
+/* ── IO EXAMPLE ── */
+.io-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  margin: 14px 0;
+}
+.io-box { background: #1C1B19; border-radius: 8px; overflow: hidden; }
+.io-head { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 8px 14px; border-bottom: 1px solid rgba(255,255,255,.07); }
+.io-head.input  { color: #79C0FF; }
+.io-head.output { color: #7EE787; }
+.io-body { font-family: var(--mono); font-size: 12.5px; padding: 12px 14px; color: #E5E3DC; line-height: 1.7; }
+
+/* ── SECTION DIVIDER ── */
+.divider { border: none; border-top: 1px solid var(--border); margin: 56px 0; }
+
+/* ── HOMEWORK SECTION ── */
+.hw-section { background: #1C1B19; border-radius: 16px; padding: 36px; margin-top: 0; }
+.hw-section h2 { color: #F7F6F2; font-size: 24px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 6px; }
+.hw-section > p { color: rgba(255,255,255,.5); font-size: 14px; margin-bottom: 32px; }
+
+.hw-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  padding: 22px 24px;
+  margin-bottom: 18px;
+}
+.hw-number {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,.3); margin-bottom: 6px;
+}
+.hw-title { color: #F7F6F2; font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+.hw-desc  { color: rgba(255,255,255,.55); font-size: 13.5px; margin-bottom: 16px; line-height: 1.65; }
+
+.hw-io { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.hw-io-box { background: rgba(0,0,0,.3); border-radius: 8px; padding: 12px 14px; }
+.hw-io-label { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px; }
+.hw-io-label.inp { color: #79C0FF; }
+.hw-io-label.out { color: #7EE787; }
+.hw-io-val { font-family: var(--mono); font-size: 12.5px; color: #E5E3DC; line-height: 1.65; }
+
+.hw-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.hw-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px;
+}
+
+.hw-tip { color: rgba(255,255,255,.35); font-size: 12.5px; font-style: italic; margin-top: 10px; }
+
+.difficulty { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; margin-left: auto; }
+.diff-easy   { color: #6EE7B7; }
+.diff-medium { color: #FCD34D; }
+.diff-hard   { color: #FCA5A5; }
+
+.hw-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+
+@media (max-width: 600px) {
+  .io-row, .hw-io { grid-template-columns: 1fr; }
+  .topnav { padding: 0 16px; }
+  .wrap { padding: 32px 16px 80px; }
+  .hw-section { padding: 24px 18px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="topnav-brand">🐍 Functions Workbook</div>
+  <a href="#basic"  class="t-basic">Normal Function</a>
+  <a href="#pos"    class="t-pos">Positional</a>
+  <a href="#def"    class="t-def">Default Param</a>
+  <a href="#args"   class="t-args">*args</a>
+  <a href="#kwargs" class="t-kwargs">**kwargs</a>
+  <a href="#return" class="t-return">Return Values</a>
+  <a href="#hw"     class="t-hw">📝 Homework</a>
+</nav>
+
+<div class="wrap">
+
+<!-- PAGE TITLE -->
+<div class="page-title">
+  <h1>Python Functions<br>Real-Life Problem Workbook</h1>
+  <p>Solved examples from everyday scenarios — each problem teaches one concept. Study the solution, read the explanation, then tackle the homework problems on your own.</p>
+  <div class="tag-row">
+    <span class="concept-tag tag-basic">Normal Function</span>
+    <span class="concept-tag tag-pos">Positional Params</span>
+    <span class="concept-tag tag-def">Default Params</span>
+    <span class="concept-tag tag-args">*args</span>
+    <span class="concept-tag tag-kwargs">**kwargs</span>
+    <span class="concept-tag tag-return">Return Values</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     CHAPTER 1 — NORMAL FUNCTION
+═════════════════════════════════════════ -->
+<div class="chapter" id="basic">
+  <div class="chapter-label" style="background:var(--c-basic-bg);color:var(--c-basic);">
+    📘 Concept 1 — Normal Function
+  </div>
+  <h2>No parameters, no arguments — just a named task</h2>
+  <p>The simplest function takes no input. It performs a fixed task every time it is called. Think of it as a saved recipe — you run it when you need the result.</p>
+
+  <!-- SOLVED 1 -->
+  <div class="prob-card">
+    <div class="prob-head">
+      <div class="prob-icon">🏥</div>
+      <div class="prob-meta">
+        <div class="prob-industry">Healthcare</div>
+        <div class="prob-title">Display Hospital Welcome Message</div>
+        <div class="prob-badges">
+          <span class="concept-tag tag-basic">Normal Function</span>
+          <span class="concept-tag" style="background:#F0F4FF;color:#6366F1;">✅ Solved</span>
+        </div>
+      </div>
+    </div>
+    <div class="prob-body">
+      <p>A hospital kiosk should display a welcome screen every time a patient walks up. The message is always the same. A no-argument function is perfect here.</p>
+
+      <div class="codeblock">
+        <div class="codeblock-bar">
+          <div class="codeblock-bar-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="codeblock-file">hospital_kiosk.py</span></div>
+          <span class="codeblock-label lbl-basic">Normal Function</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">show_welcome</span>():
+    <span class="dc">"""Display the hospital's welcome message on the kiosk."""</span>
+    <span class="fn">print</span>(<span class="st">"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"</span>)
+    <span class="fn">print</span>(<span class="st">"  Welcome to City General Hospital"</span>)
+    <span class="fn">print</span>(<span class="st">"  Open 24 hours · Emergency: 108"</span>)
+    <span class="fn">print</span>(<span class="st">"  Please collect your token below."</span>)
+    <span class="fn">print</span>(<span class="st">"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"</span>)
+
+<span class="cm"># Call the function every time a patient arrives</span>
+<span class="fn">show_welcome</span>()
+</pre>
+      </div>
+
+      <div class="explain">
+        <strong>Why a function here?</strong> The message is identical for every patient, so we'd rather write it once and call <code>show_welcome()</code> wherever needed — at startup, after timeout, after each session — than copy-paste those five print lines every time.
+      </div>
+
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input (call)</div><div class="io-body">show_welcome()</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>  Welcome to City General Hospital<br>  Open 24 hours · Emergency: 108<br>  Please collect your token below.<br>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLVED 2 -->
+  <div class="prob-card">
+    <div class="prob-head">
+      <div class="prob-icon">☕</div>
+      <div class="prob-meta">
+        <div class="prob-industry">Café / Retail</div>
+        <div class="prob-title">Print Today's Daily Special</div>
+        <div class="prob-badges">
+          <span class="concept-tag tag-basic">Normal Function</span>
+          <span class="concept-tag" style="background:#F0F4FF;color:#6366F1;">✅ Solved</span>
+        </div>
+      </div>
+    </div>
+    <div class="prob-body">
+      <p>A café POS system should print the day's special menu at the start of every shift. Same function, called once each morning.</p>
+      <div class="codeblock">
+        <div class="codeblock-bar">
+          <div class="codeblock-bar-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="codeblock-file">cafe_pos.py</span></div>
+          <span class="codeblock-label lbl-basic">Normal Function</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">print_daily_special</span>():
+    <span class="dc">"""Print today's featured items for the café board."""</span>
+    specials = [
+        (<span class="st">"Mango Cold Brew"</span>, <span class="nb">180</span>),
+        (<span class="st">"Avocado Toast"</span>,   <span class="nb">220</span>),
+        (<span class="st">"Blueberry Muffin"</span>,<span class="nb">  90</span>),
+    ]
+    <span class="fn">print</span>(<span class="st">"\n🌟 TODAY'S SPECIALS 🌟"</span>)
+    <span class="kw">for</span> item, price <span class="kw">in</span> specials:
+        <span class="fn">print</span>(<span class="st">f"  {item:<span class="nb">20</span>} ¥{price}"</span>)
+
+<span class="fn">print_daily_special</span>()
+</pre>
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">print_daily_special()</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">🌟 TODAY'S SPECIALS 🌟<br>  Mango Cold Brew      ¥180<br>  Avocado Toast        ¥220<br>  Blueberry Muffin     ¥90</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+
+<!-- ════════════════════════════════════════
+     CHAPTER 2 — POSITIONAL PARAMETERS
+═════════════════════════════════════════ -->
+<div class="chapter" id="pos">
+  <div class="chapter-label" style="background:var(--c-pos-bg);color:var(--c-pos);">
+    📗 Concept 2 — Positional Parameters
+  </div>
+  <h2>Order matters — inputs mapped by position</h2>
+  <p>Positional parameters receive values in the exact order they are passed. The first argument fills the first parameter, the second fills the second, and so on. Most everyday functions work this way.</p>
+
+  <!-- SOLVED 3 -->
+  <div class="prob-card">
+    <div class="prob-head">
+      <div class="prob-icon">🚗</div>
+      <div class="prob-meta">
+        <div class="prob-industry">Transport / Ride-hailing</div>
+        <div class="prob-title">Calculate Taxi Fare</div>
+        <div class="prob-badges">
+          <span class="concept-tag tag-pos">Positional Params</span>
+          <span class="concept-tag" style="background:#F0F4FF;color:#6366F1;">✅ Solved</span>
+        </div>
+      </div>
+    </div>
+    <div class="prob-body">
+      <p>A taxi app calculates fare from distance (km) and rate per km. Both values change per ride — they must be passed as arguments.</p>
+      <div class="codeblock">
+        <div class="codeblock-bar">
+          <div class="codeblock-bar-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="codeblock-file">taxi_fare.py</span></div>
+          <span class="codeblock-label lbl-pos">Positional</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">calculate_fare</span>(distance_km, rate_per_km):
+    <span class="dc">"""
+    Calculate taxi fare.
+    Args:
+        distance_km  : trip distance in kilometres
+        rate_per_km  : charge per kilometre (¥)
+    """</span>
+    base_fare = <span class="nb">30</span>                       <span class="cm"># ¥30 minimum flag-fall</span>
+    fare = base_fare + (distance_km * rate_per_km)
+    <span class="fn">print</span>(<span class="st">f"Distance : {distance_km} km"</span>)
+    <span class="fn">print</span>(<span class="st">f"Rate     : ¥{rate_per_km}/km"</span>)
+    <span class="fn">print</span>(<span class="st">f"Total    : ¥{fare:.2f}"</span>)
+
+<span class="cm"># City cab: 12 km at ¥15/km</span>
+<span class="fn">calculate_fare</span>(<span class="nb">12</span>, <span class="nb">15</span>)
+
+<span class="cm"># Airport cab: 35 km at ¥20/km</span>
+<span class="fn">calculate_fare</span>(<span class="nb">35</span>, <span class="nb">20</span>)
+</pre>
+      </div>
+      <div class="explain green">
+        <strong>Key point — order matters:</strong> <code>calculate_fare(12, 15)</code> means distance=12, rate=15. If you wrote <code>calculate_fare(15, 12)</code> you'd get the wrong answer. Python fills positional params left to right.
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">calculate_fare(12, 15)</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">Distance : 12 km<br>Rate     : ¥15/km<br>Total    : ¥210.00</div></div>
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">calculate_fare(35, 20)</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">Distance : 35 km<br>Rate     : ¥20/km<br>Total    : ¥730.00</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLVED 4 -->
+  <div class="prob-card">
+    <div class="prob-head">
+      <div class="prob-icon">🧾</div>
+      <div class="prob-meta">
+        <div class="prob-industry">Retail / POS</div>
+        <div class="prob-title">Generate Sales Receipt</div>
+        <div class="prob-badges">
+          <span class="concept-tag tag-pos">Positional Params</span>
+          <span class="concept-tag" style="background:#F0F4FF;color:#6366F1;">✅ Solved</span>
+        </div>
+      </div>
+    </div>
+    <div class="prob-body">
+      <p>A POS terminal needs to print a receipt given item name, quantity, and unit price. Three positional parameters — the cashier supplies all three for every sale.</p>
+      <div class="codeblock">
+        <div class="codeblock-bar">
+          <div class="codeblock-bar-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="codeblock-file">pos_receipt.py</span></div>
+          <span class="codeblock-label lbl-pos">Positional</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">print_receipt</span>(item_name, quantity, unit_price):
+    <span class="dc">"""Print a line-item receipt for one product."""</span>
+    total = quantity * unit_price
+    <span class="fn">print</span>(<span class="st">f"Item     : {item_name}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Qty      : {quantity}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Price    : ¥{unit_price:.2f} each"</span>)
+    <span class="fn">print</span>(<span class="st">f"Subtotal : ¥{total:.2f}"</span>)
+    <span class="fn">print</span>(<span class="st">"─" * <span class="nb">28</span></span>)
+
+<span class="fn">print_receipt</span>(<span class="st">"Basmati Rice 5kg"</span>, <span class="nb">2</span>, <span class="nb">320.00</span>)
+<span class="fn">print_receipt</span>(<span class="st">"Olive Oil 1L"</span>,    <span class="nb">1</span>, <span class="nb">450.00</span>)
+</pre>
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">print_receipt("Basmati Rice 5kg", 2, 320.00)</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">Item     : Basmati Rice 5kg<br>Qty      : 2<br>Price    : ¥320.00 each<br>Subtotal : ¥640.00<br>────────────────────────────</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+
+<!-- ════════════════════════════════════════
+     CHAPTER 3 — DEFAULT PARAMETERS
+═════════════════════════════════════════ -->
+<div class="chapter" id="def">
+  <div class="chapter-label" style="background:var(--c-def-bg);color:var(--c-def);">
+    📙 Concept 3 — Default Parameters
+  </div>
+  <h2>Smart fallbacks — optional arguments with preset values</h2>
+  <p>Default parameters let you call a function with fewer arguments when the common case is predictable. The caller can always override them when needed.</p>
+
+  <!-- SOLVED 5 -->
+  <div class="prob-card">
+    <div class="prob-head">
+      <div class="prob-icon">📧</div>
+      <div class="prob-meta">
+        <div class="prob-industry">HR / Corporate</div>
+        <div class="prob-title">Employee Onboarding Email Generator</div>
+        <div class="prob-badges">
+          <span class="concept-tag tag-def">Default Params</span>
+          <span class="concept-tag" style="background:#F0F4FF;color:#6366F1;">✅ Solved</span>
+        </div>
+      </div>
+    </div>
+    <div class="prob-body">
+      <p>The HR system sends a welcome email to every new employee. Most join as "Junior" in the "General" department — but some have different roles and departments that override the defaults.</p>
+      <div class="codeblock">
+        <div class="codeblock-bar">
+          <div class="codeblock-bar-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="codeblock-file">onboarding.py</span></div>
+          <span class="codeblock-label lbl-def">Default Params</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">send_welcome_email</span>(name, role=<span class="st">"Junior Associate"</span>, department=<span class="st">"General"</span>):
+    <span class="dc">"""
+    Generate a welcome email.
+    Default role and department suit 80% of new hires;
+    senior or specialist hires override as needed.
+    """</span>
+    <span class="fn">print</span>(<span class="st">f"To      : {name}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Role    : {role}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Dept    : {department}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Message : Welcome aboard, {name}! "
+           <span class="st">f"You join us as {role} in {department}."</span>)
+    <span class="fn">print</span>(<span class="st">"─" * <span class="nb">50</span></span>)
+
+<span class="cm"># Standard hire — only name needed</span>
+<span class="fn">send_welcome_email</span>(<span class="st">"Riya Sharma"</span>)
+
+<span class="cm"># Senior hire — override role</span>
+<span class="fn">send_welcome_email</span>(<span class="st">"Arjun Mehta"</span>, role=<span class="st">"Senior Engineer"</span>)
+
+<span class="cm"># Specialist — override both</span>
+<span class="fn">send_welcome_email</span>(<span class="st">"Priya Patel"</span>, role=<span class="st">"Lead Data Scientist"</span>,
+                   department=<span class="st">"Analytics"</span>)
+</pre>
+      </div>
+      <div class="explain amber">
+        <strong>Why default params?</strong> Most hires share the same role and department. Writing <code>send_welcome_email("Riya")</code> is cleaner than forcing every caller to repeat <code>"Junior Associate", "General"</code> every time. Defaults encode the <em>most common case</em>.
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">send_welcome_email("Riya Sharma")</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">To      : Riya Sharma<br>Role    : Junior Associate<br>Dept    : General<br>Message : Welcome aboard, Riya Sharma!<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You join us as Junior Associate in General.</div></div>
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">send_welcome_email("Priya Patel",<br>&nbsp;&nbsp;role="Lead Data Scientist",<br>&nbsp;&nbsp;department="Analytics")</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">To      : Priya Patel<br>Role    : Lead Data Scientist<br>Dept    : Analytics<br>Message : Welcome aboard, Priya Patel!<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You join us as Lead Data Scientist in Analytics.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLVED 6 -->
+  <div class="prob-card">
+    <div class="prob-head">
+      <div class="prob-icon">💊</div>
+      <div class="prob-meta">
+        <div class="prob-industry">Pharmacy / Health</div>
+        <div class="prob-title">Medicine Dosage Calculator</div>
+        <div class="prob-badges">
+          <span class="concept-tag tag-def">Default Params</span>
+          <span class="concept-tag" style="background:#F0F4FF;color:#6366F1;">✅ Solved</span>
+        </div>
+      </div>
+    </div>
+    <div class="prob-body">
+      <p>A pharmacy app calculates how many days a prescription will last. The standard dose is 2 tablets/day and the pill count per box is 30 — but the doctor can specify otherwise.</p>
+      <div class="codeblock">
+        <div class="codeblock-bar">
+          <div class="codeblock-bar-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="codeblock-file">dosage.py</span></div>
+          <span class="codeblock-label lbl-def">Default Params</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">prescription_days</span>(medicine, tablets_per_day=<span class="nb">2</span>, total_tablets=<span class="nb">30</span>):
+    <span class="dc">"""Calculate how many days a prescription will last."""</span>
+    days = total_tablets // tablets_per_day
+    <span class="fn">print</span>(<span class="st">f"Medicine        : {medicine}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Dose            : {tablets_per_day} tablet(s)/day"</span>)
+    <span class="fn">print</span>(<span class="st">f"Total tablets   : {total_tablets}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Duration        : {days} days"</span>)
+    <span class="fn">print</span>()
+
+<span class="cm"># Standard prescription</span>
+<span class="fn">prescription_days</span>(<span class="st">"Metformin 500mg"</span>)
+
+<span class="cm"># 3 times a day, 60-tablet pack</span>
+<span class="fn">prescription_days</span>(<span class="st">"Amoxicillin 250mg"</span>, tablets_per_day=<span class="nb">3</span>, total_tablets=<span class="nb">60</span>)
+</pre>
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">prescription_days("Metformin 500mg")</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">Medicine        : Metformin 500mg<br>Dose            : 2 tablet(s)/day<br>Total tablets   : 30<br>Duration        : 15 days</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+
+<!-- ════════════════════════════════════════
+     CHAPTER 4 — *args
+═════════════════════════════════════════ -->
+<div class="chapter" id="args">
+  <div class="chapter-label" style="background:var(--c-args-bg);color:var(--c-args);">
+    📓 Concept 4 — *args (Variable Positional Arguments)
+  </div>
+  <h2>Accept any number of values — collected as a tuple</h2>
+  <p><code style="font-family:var(--mono)">*args</code> lets a function accept <em>any number</em> of positional arguments. Python packs them into a tuple inside the function. Use it when you don't know in advance how many values the caller will supply.</p>
+
+  <!-- SOLVED 7 -->
+  <div class="prob-card">
+    <div class="prob-head">
+      <div class="prob-icon">🍕</div>
+      <div class="prob-meta">
+        <div class="prob-industry">Restaurant / Food Delivery</div>
+        <div class="prob-title">Restaurant Order Bill Calculator</div>
+        <div class="prob-badges">
+          <span class="concept-tag tag-args">*args</span>
+          <span class="concept-tag" style="background:#F0F4FF;color:#6366F1;">✅ Solved</span>
+        </div>
+      </div>
+    </div>
+    <div class="prob-body">
+      <p>A restaurant table can order 1 item or 20. The billing function must handle any number of dish prices — a perfect case for <code>*args</code>.</p>
+      <div class="codeblock">
+        <div class="codeblock-bar">
+          <div class="codeblock-bar-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="codeblock-file">restaurant_bill.py</span></div>
+          <span class="codeblock-label lbl-args">*args</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">calculate_bill</span>(*dish_prices):
+    <span class="dc">"""
+    Sum any number of dish prices into a final bill.
+    *dish_prices collects all positional args as a tuple.
+    """</span>
+    <span class="fn">print</span>(<span class="st">"── Order Summary ──"</span>)
+    <span class="kw">for</span> i, price <span class="kw">in</span> <span class="fn">enumerate</span>(dish_prices, <span class="nb">1</span>):
+        <span class="fn">print</span>(<span class="st">f"  Item {i}: ¥{price}"</span>)
+    subtotal = <span class="fn">sum</span>(dish_prices)
+    gst      = <span class="fn">round</span>(subtotal * <span class="nb">0.05</span>, <span class="nb">2</span>)   <span class="cm"># 5% Tax on food</span>
+    total    = <span class="fn">round</span>(subtotal + gst, <span class="nb">2</span>)
+    <span class="fn">print</span>(<span class="st">f"  Subtotal : ¥{subtotal}"</span>)
+    <span class="fn">print</span>(<span class="st">f"  Tax (5%) : ¥{gst}"</span>)
+    <span class="fn">print</span>(<span class="st">f"  TOTAL    : ¥{total}"</span>)
+
+<span class="cm"># Table of 2 — 3 dishes</span>
+<span class="fn">calculate_bill</span>(<span class="nb">250</span>, <span class="nb">180</span>, <span class="nb">120</span>)
+
+<span class="fn">print</span>()
+
+<span class="cm"># Table of 5 — 6 dishes</span>
+<span class="fn">calculate_bill</span>(<span class="nb">350</span>, <span class="nb">200</span>, <span class="nb">150</span>, <span class="nb">90</span>, <span class="nb">400</span>, <span class="nb">60</span>)
+</pre>
+      </div>
+      <div class="explain violet">
+        <strong>How *args works:</strong> <code>calculate_bill(250, 180, 120)</code> → inside the function, <code>dish_prices</code> becomes the tuple <code>(250, 180, 120)</code>. No matter how many prices are passed, the function handles them all with one <code>sum()</code>. You can loop, index, or pass it to any built-in that accepts iterables.
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">calculate_bill(250, 180, 120)</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">── Order Summary ──<br>&nbsp;&nbsp;Item 1: ¥250<br>&nbsp;&nbsp;Item 2: ¥180<br>&nbsp;&nbsp;Item 3: ¥120<br>&nbsp;&nbsp;Subtotal : ¥550<br>&nbsp;&nbsp;Tax (5%) : ¥27.5<br>&nbsp;&nbsp;TOTAL    : ¥577.5</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLVED 8 -->
+  <div class="prob-card">
+    <div class="prob-head">
+      <div class="prob-icon">📦</div>
+      <div class="prob-meta">
+        <div class="prob-industry">Logistics / Courier</div>
+        <div class="prob-title">Multi-Package Shipping Weight</div>
+        <div class="prob-badges">
+          <span class="concept-tag tag-args">*args</span>
+          <span class="concept-tag" style="background:#F0F4FF;color:#6366F1;">✅ Solved</span>
+        </div>
+      </div>
+    </div>
+    <div class="prob-body">
+      <p>A courier service charges by total shipment weight. A single order may have 1 to 10 packages — the weight function must accept all of them.</p>
+      <div class="codeblock">
+        <div class="codeblock-bar">
+          <div class="codeblock-bar-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="codeblock-file">courier.py</span></div>
+          <span class="codeblock-label lbl-args">*args</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">shipping_cost</span>(*weights_kg):
+    <span class="dc">"""Calculate shipping cost for any number of packages."""</span>
+    total_weight = <span class="fn">sum</span>(weights_kg)
+    rate = <span class="nb">60</span> <span class="kw">if</span> total_weight <= <span class="nb">5</span> <span class="kw">else</span> <span class="nb">50</span>   <span class="cm"># bulk discount</span>
+    cost = total_weight * rate
+    <span class="fn">print</span>(<span class="st">f"Packages    : {<span class="fn">len</span>(weights_kg)}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Total weight: {total_weight} kg"</span>)
+    <span class="fn">print</span>(<span class="st">f"Rate        : ¥{rate}/kg"</span>)
+    <span class="fn">print</span>(<span class="st">f"Shipping    : ¥{cost}"</span>)
+
+<span class="fn">shipping_cost</span>(<span class="nb">1.5</span>, <span class="nb">2.0</span>)            <span class="cm"># 2 packages</span>
+<span class="fn">print</span>()
+<span class="fn">shipping_cost</span>(<span class="nb">3.0</span>, <span class="nb">1.5</span>, <span class="nb">2.5</span>, <span class="nb">1.0</span>)   <span class="cm"># 4 packages, bulk rate</span>
+</pre>
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">shipping_cost(1.5, 2.0)</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">Packages    : 2<br>Total weight: 3.5 kg<br>Rate        : ¥60/kg<br>Shipping    : ¥210.0</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+
+<!-- ════════════════════════════════════════
+     CHAPTER 5 — **kwargs
+═════════════════════════════════════════ -->
+<div class="chapter" id="kwargs">
+  <div class="chapter-label" style="background:var(--c-kwargs-bg);color:var(--c-kwargs);">
+    📔 Concept 5 — **kwargs (Variable Keyword Arguments)
+  </div>
+  <h2>Named flexibility — collected as a dictionary</h2>
+  <p><code style="font-family:var(--mono)">**kwargs</code> collects any number of <em>named</em> arguments into a dictionary. Use it when the caller needs to supply different fields for different situations — like form data or configuration options.</p>
+
+  <!-- SOLVED 9 -->
+  <div class="prob-card">
+    <div class="prob-head">
+      <div class="prob-icon">🏨</div>
+      <div class="prob-meta">
+        <div class="prob-industry">Hospitality / Hotel</div>
+        <div class="prob-title">Hotel Room Booking Form</div>
+        <div class="prob-badges">
+          <span class="concept-tag tag-kwargs">**kwargs</span>
+          <span class="concept-tag" style="background:#F0F4FF;color:#6366F1;">✅ Solved</span>
+        </div>
+      </div>
+    </div>
+    <div class="prob-body">
+      <p>A hotel booking system collects guest details. Different bookings have different optional fields: some guests add meal plans, some request early check-in, some add spa packages. <code>**kwargs</code> handles them all without pre-defining every possible option.</p>
+      <div class="codeblock">
+        <div class="codeblock-bar">
+          <div class="codeblock-bar-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="codeblock-file">hotel_booking.py</span></div>
+          <span class="codeblock-label lbl-kwargs">**kwargs</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">book_room</span>(guest_name, room_type, **extras):
+    <span class="dc">"""
+    Confirm a hotel booking.
+    guest_name, room_type : required positional args
+    **extras              : any additional preferences the
+                            guest requests (meal plan, view,
+                            early check-in, etc.)
+    """</span>
+    <span class="fn">print</span>(<span class="st">f"╔══ Booking Confirmation ══╗"</span>)
+    <span class="fn">print</span>(<span class="st">f"  Guest     : {guest_name}"</span>)
+    <span class="fn">print</span>(<span class="st">f"  Room Type : {room_type}"</span>)
+    <span class="kw">if</span> extras:
+        <span class="fn">print</span>(<span class="st">"  Extras:"</span>)
+        <span class="kw">for</span> key, value <span class="kw">in</span> extras.items():
+            <span class="fn">print</span>(<span class="st">f"    • {key.replace('_',' ').title()}: {value}"</span>)
+    <span class="fn">print</span>(<span class="st">f"╚═════════════════════════╝"</span>)
+    <span class="fn">print</span>()
+
+<span class="cm"># Simple booking</span>
+<span class="fn">book_room</span>(<span class="st">"Anjali Singh"</span>, <span class="st">"Deluxe Double"</span>)
+
+<span class="cm"># Booking with extras</span>
+<span class="fn">book_room</span>(
+    <span class="st">"Raj Kapoor"</span>, <span class="st">"Suite"</span>,
+    meal_plan=<span class="st">"Full Board"</span>,
+    sea_view=<span class="kw">True</span>,
+    early_check_in=<span class="st">"10:00 AM"</span>,
+    spa_package=<span class="st">"Couple Massage"</span>
+)
+</pre>
+      </div>
+      <div class="explain pink">
+        <strong>How **kwargs works:</strong> Any keyword arguments beyond the named parameters get packed into a dictionary called <code>extras</code>. So <code>book_room("Raj", "Suite", meal_plan="Full Board", sea_view=True)</code> produces <code>extras = {"meal_plan": "Full Board", "sea_view": True}</code>. You can iterate it, check keys, or store it in a database — it's just a dict.
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">book_room("Raj Kapoor", "Suite",<br>&nbsp;&nbsp;meal_plan="Full Board",<br>&nbsp;&nbsp;sea_view=True,<br>&nbsp;&nbsp;early_check_in="10:00 AM")</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">╔══ Booking Confirmation ══╗<br>&nbsp;&nbsp;Guest     : Raj Kapoor<br>&nbsp;&nbsp;Room Type : Suite<br>&nbsp;&nbsp;Extras:<br>&nbsp;&nbsp;&nbsp;&nbsp;• Meal Plan: Full Board<br>&nbsp;&nbsp;&nbsp;&nbsp;• Sea View: True<br>&nbsp;&nbsp;&nbsp;&nbsp;• Early Check In: 10:00 AM<br>╚═════════════════════════╝</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLVED 10 -->
+  <div class="prob-card">
+    <div class="prob-head">
+      <div class="prob-icon">👤</div>
+      <div class="prob-meta">
+        <div class="prob-industry">Social Media / SaaS</div>
+        <div class="prob-title">User Profile Builder</div>
+        <div class="prob-badges">
+          <span class="concept-tag tag-kwargs">**kwargs</span>
+          <span class="concept-tag" style="background:#F0F4FF;color:#6366F1;">✅ Solved</span>
+        </div>
+      </div>
+    </div>
+    <div class="prob-body">
+      <p>A signup form collects a username and email (mandatory), plus any optional profile fields the user fills in. Every user fills different optional fields — <code>**kwargs</code> handles them elegantly.</p>
+      <div class="codeblock">
+        <div class="codeblock-bar">
+          <div class="codeblock-bar-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="codeblock-file">user_profile.py</span></div>
+          <span class="codeblock-label lbl-kwargs">**kwargs</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">create_user</span>(username, email, **profile_fields):
+    <span class="dc">"""Build and display a new user profile."""</span>
+    user = {<span class="st">"username"</span>: username, <span class="st">"email"</span>: email}
+    user.update(profile_fields)   <span class="cm"># merge optional fields</span>
+    <span class="fn">print</span>(<span class="st">"New user created:"</span>)
+    <span class="kw">for</span> field, value <span class="kw">in</span> user.items():
+        <span class="fn">print</span>(<span class="st">f"  {field:<span class="nb">12</span>}: {value}"</span>)
+    <span class="fn">print</span>()
+
+<span class="cm"># Minimal signup</span>
+<span class="fn">create_user</span>(<span class="st">"code_ninja"</span>, <span class="st">"ninja@dev.io"</span>)
+
+<span class="cm"># Full profile</span>
+<span class="fn">create_user</span>(
+    <span class="st">"sunny_k"</span>, <span class="st">"sunny@example.com"</span>,
+    full_name=<span class="st">"Sunita Kumar"</span>, city=<span class="st">"Pune"</span>,
+    age=<span class="nb">27</span>, bio=<span class="st">"Python enthusiast 🐍"</span>
+)
+</pre>
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">create_user("sunny_k", "sunny@example.com",<br>&nbsp;&nbsp;full_name="Sunita Kumar",<br>&nbsp;&nbsp;city="Pune", age=27)</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">New user created:<br>&nbsp;&nbsp;username    : sunny_k<br>&nbsp;&nbsp;email       : sunny@example.com<br>&nbsp;&nbsp;full_name   : Sunita Kumar<br>&nbsp;&nbsp;city        : Pune<br>&nbsp;&nbsp;age         : 27</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+
+<!-- ════════════════════════════════════════
+     CHAPTER 6 — RETURN VALUES
+═════════════════════════════════════════ -->
+<div class="chapter" id="return">
+  <div class="chapter-label" style="background:var(--c-return-bg);color:var(--c-return);">
+    📕 Concept 6 — Return Values
+  </div>
+  <h2>Send results back — use the output, don't just print it</h2>
+  <p>A function that only prints is a dead end — you can't use its result in another calculation. <code style="font-family:var(--mono)">return</code> sends a value back so the caller can store it, pass it on, or make decisions with it.</p>
+
+  <!-- SOLVED 11 -->
+  <div class="prob-card">
+    <div class="prob-head">
+      <div class="prob-icon">🏦</div>
+      <div class="prob-meta">
+        <div class="prob-industry">Banking / Finance</div>
+        <div class="prob-title">Interest Calculator (Simple &amp; Compound)</div>
+        <div class="prob-badges">
+          <span class="concept-tag tag-return">Return Values</span>
+          <span class="concept-tag" style="background:#F0F4FF;color:#6366F1;">✅ Solved</span>
+        </div>
+      </div>
+    </div>
+    <div class="prob-body">
+      <p>A banking app calculates interest earned. The result must be <em>returned</em> so other parts of the app — a report, a tax calculator, a comparison screen — can use it.</p>
+      <div class="codeblock">
+        <div class="codeblock-bar">
+          <div class="codeblock-bar-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="codeblock-file">interest.py</span></div>
+          <span class="codeblock-label lbl-return">Return Values</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">simple_interest</span>(principal, rate, years):
+    <span class="dc">"""Return simple interest earned."""</span>
+    <span class="kw">return</span> <span class="fn">round</span>(principal * rate * years / <span class="nb">100</span>, <span class="nb">2</span>)
+
+<span class="kw">def</span> <span class="fn">compound_interest</span>(principal, rate, years, n=<span class="nb">12</span>):
+    <span class="dc">"""
+    Return compound interest earned.
+    n = number of compounding periods per year (default: monthly)
+    """</span>
+    amount = principal * (<span class="nb">1</span> + rate / (<span class="nb">100</span> * n)) ** (n * years)
+    <span class="kw">return</span> <span class="fn">round</span>(amount - principal, <span class="nb">2</span>)
+
+<span class="kw">def</span> <span class="fn">compare_interest</span>(principal, rate, years):
+    <span class="dc">"""Use returned values to build a comparison report."""</span>
+    si = <span class="fn">simple_interest</span>(principal, rate, years)     <span class="cm"># ← uses return</span>
+    ci = <span class="fn">compound_interest</span>(principal, rate, years)    <span class="cm"># ← uses return</span>
+    <span class="fn">print</span>(<span class="st">f"Principal        : ¥{principal:,}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Rate             : {rate}% p.a.  | Years: {years}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Simple Interest  : ¥{si:,}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Compound Interest: ¥{ci:,}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Difference       : ¥{<span class="fn">round</span>(ci-si,<span class="nb">2</span>):,} more with compounding"</span>)
+
+<span class="fn">compare_interest</span>(<span class="nb">100_000</span>, <span class="nb">8</span>, <span class="nb">5</span>)
+</pre>
+      </div>
+      <div class="explain red">
+        <strong>Why return instead of print?</strong> <code>compare_interest()</code> calls <em>both</em> helper functions and uses their <em>returned</em> values to compute the difference. If <code>simple_interest</code> only printed, there'd be no way to subtract from it. <strong>Return when the result needs to be used. Print when it only needs to be shown.</strong>
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">compare_interest(100_000, 8, 5)</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">Principal        : ¥1,00,000<br>Rate             : 8% p.a.  | Years: 5<br>Simple Interest  : ¥40,000.00<br>Compound Interest: ¥48,985.97<br>Difference       : ¥8,985.97 more with compounding</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLVED 12 -->
+  <div class="prob-card">
+    <div class="prob-head">
+      <div class="prob-icon">🎓</div>
+      <div class="prob-meta">
+        <div class="prob-industry">Education</div>
+        <div class="prob-title">Return Multiple Values — Exam Result Card</div>
+        <div class="prob-badges">
+          <span class="concept-tag tag-return">Return Values</span>
+          <span class="concept-tag" style="background:#F0F4FF;color:#6366F1;">✅ Solved</span>
+        </div>
+      </div>
+    </div>
+    <div class="prob-body">
+      <p>Python can return multiple values as a tuple — perfect for an exam result that needs to give back percentage, grade, and pass/fail status all at once.</p>
+      <div class="codeblock">
+        <div class="codeblock-bar">
+          <div class="codeblock-bar-left"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="codeblock-file">exam_result.py</span></div>
+          <span class="codeblock-label lbl-return">Return Values</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">evaluate_result</span>(marks_obtained, total_marks=<span class="nb">100</span>):
+    <span class="dc">"""
+    Returns:
+        percentage  : float
+        grade       : str  (A+, A, B, C, D, F)
+        status      : str  (Pass / Fail)
+    """</span>
+    pct = <span class="fn">round</span>((marks_obtained / total_marks) * <span class="nb">100</span>, <span class="nb">2</span>)
+
+    <span class="kw">if</span>   pct >= <span class="nb">90</span>: grade = <span class="st">"A+"</span>
+    <span class="kw">elif</span> pct >= <span class="nb">80</span>: grade = <span class="st">"A"</span>
+    <span class="kw">elif</span> pct >= <span class="nb">70</span>: grade = <span class="st">"B"</span>
+    <span class="kw">elif</span> pct >= <span class="nb">60</span>: grade = <span class="st">"C"</span>
+    <span class="kw">elif</span> pct >= <span class="nb">40</span>: grade = <span class="st">"D"</span>
+    <span class="kw">else</span>:          grade = <span class="st">"F"</span>
+
+    status = <span class="st">"Pass"</span> <span class="kw">if</span> pct >= <span class="nb">40</span> <span class="kw">else</span> <span class="st">"Fail"</span>
+    <span class="kw">return</span> pct, grade, status    <span class="cm"># ← returns a tuple of 3 values</span>
+
+<span class="cm"># Unpack the 3 returned values</span>
+percentage, grade, status = <span class="fn">evaluate_result</span>(<span class="nb">82</span>, <span class="nb">100</span>)
+<span class="fn">print</span>(<span class="st">f"Marks: 82/100 | {percentage}% | Grade: {grade} | {status}"</span>)
+
+<span class="cm"># The returned values can be used in further logic</span>
+<span class="kw">if</span> status == <span class="st">"Pass"</span> <span class="kw">and</span> grade <span class="kw">in</span> (<span class="st">"A+"</span>, <span class="st">"A"</span>):
+    <span class="fn">print</span>(<span class="st">"🏅 Eligible for merit scholarship!"</span>)
+</pre>
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">evaluate_result(82, 100)</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">Marks: 82/100 | 82.0% | Grade: A | Pass<br>🏅 Eligible for merit scholarship!</div></div>
+      </div>
+      <div class="io-row">
+        <div class="io-box"><div class="io-head input">▶ Input</div><div class="io-body">evaluate_result(35, 100)</div></div>
+        <div class="io-box"><div class="io-head output">◀ Output</div><div class="io-body">Marks: 35/100 | 35.0% | Grade: F | Fail</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+
+<!-- ════════════════════════════════════════
+     HOMEWORK SECTION
+═════════════════════════════════════════ -->
+<div class="hw-section" id="hw">
+  <h2>📝 Homework Problems</h2>
+  <p>Solve these on your own. Each problem clearly states the concept to practice, the expected inputs, and the exact output your function should produce.</p>
+
+  <!-- HW 1 -->
+  <div class="hw-card">
+    <div class="hw-head">
+      <div>
+        <div class="hw-number">Problem 01 · Normal Function</div>
+        <div class="hw-title">🚦 Traffic Light Instruction Board</div>
+      </div>
+      <span class="difficulty diff-easy">★☆☆ Easy</span>
+    </div>
+    <div class="hw-desc">Write a function <code>show_traffic_rules()</code> that takes no arguments and prints the standard traffic signal rules. It should be called every time a new driver opens a driving app.</div>
+    <div class="hw-io">
+      <div class="hw-io-box">
+        <div class="hw-io-label inp">▶ Expected Call</div>
+        <div class="hw-io-val">show_traffic_rules()</div>
+      </div>
+      <div class="hw-io-box">
+        <div class="hw-io-label out">◀ Expected Output</div>
+        <div class="hw-io-val">🚦 TRAFFIC SIGNAL RULES<br>🔴 Red   → Stop<br>🟡 Yellow → Slow Down<br>🟢 Green  → Go</div>
+      </div>
+    </div>
+    <div class="hw-tags">
+      <span class="hw-tag" style="background:rgba(37,99,235,.2);color:#93C5FD;">Normal Function</span>
+    </div>
+    <div class="hw-tip">💡 Tip: A no-argument function is just a named block. No inputs, no return needed here — just structured print statements.</div>
+  </div>
+
+  <!-- HW 2 -->
+  <div class="hw-card">
+    <div class="hw-head">
+      <div>
+        <div class="hw-number">Problem 02 · Positional Parameters</div>
+        <div class="hw-title">💧 Water Bill Calculator</div>
+      </div>
+      <span class="difficulty diff-easy">★☆☆ Easy</span>
+    </div>
+    <div class="hw-desc">Write <code>water_bill(units_consumed, rate_per_unit)</code>. The function should print a bill showing units consumed, rate, and total payable.</div>
+    <div class="hw-io">
+      <div class="hw-io-box">
+        <div class="hw-io-label inp">▶ Expected Calls</div>
+        <div class="hw-io-val">water_bill(120, 5)<br><br>water_bill(300, 5)</div>
+      </div>
+      <div class="hw-io-box">
+        <div class="hw-io-label out">◀ Expected Output</div>
+        <div class="hw-io-val">Units Used : 120<br>Rate       : ¥5/unit<br>Total Bill : ¥600<br>──────────────────<br>Units Used : 300<br>Rate       : ¥5/unit<br>Total Bill : ¥1500</div>
+      </div>
+    </div>
+    <div class="hw-tags">
+      <span class="hw-tag" style="background:rgba(5,150,105,.2);color:#6EE7B7;">Positional Params</span>
+    </div>
+    <div class="hw-tip">💡 Tip: Remember — positional args are matched left-to-right. <code>water_bill(5, 120)</code> would be wrong even though the numbers are the same.</div>
+  </div>
+
+  <!-- HW 3 -->
+  <div class="hw-card">
+    <div class="hw-head">
+      <div>
+        <div class="hw-number">Problem 03 · Default Parameters</div>
+        <div class="hw-title">🍔 Fast Food Order System</div>
+      </div>
+      <span class="difficulty diff-easy">★☆☆ Easy</span>
+    </div>
+    <div class="hw-desc">Write <code>place_order(item, size="Medium", extra_sauce=False)</code>. Most customers order Medium and skip extra sauce — the defaults handle that. Print a confirmation with all three values.</div>
+    <div class="hw-io">
+      <div class="hw-io-box">
+        <div class="hw-io-label inp">▶ Expected Calls</div>
+        <div class="hw-io-val">place_order("Burger")<br><br>place_order("Fries", size="Large")<br><br>place_order("Wrap", "Small", True)</div>
+      </div>
+      <div class="hw-io-box">
+        <div class="hw-io-label out">◀ Expected Output</div>
+        <div class="hw-io-val">Order: Burger | Size: Medium | Sauce: No<br><br>Order: Fries  | Size: Large  | Sauce: No<br><br>Order: Wrap   | Size: Small  | Sauce: Yes</div>
+      </div>
+    </div>
+    <div class="hw-tags">
+      <span class="hw-tag" style="background:rgba(217,119,6,.2);color:#FCD34D;">Default Params</span>
+    </div>
+    <div class="hw-tip">💡 Tip: Use a ternary for sauce — <code>"Yes" if extra_sauce else "No"</code> keeps the output clean.</div>
+  </div>
+
+  <!-- HW 4 -->
+  <div class="hw-card">
+    <div class="hw-head">
+      <div>
+        <div class="hw-number">Problem 04 · *args</div>
+        <div class="hw-title">🏋️ Gym Attendance Tracker</div>
+      </div>
+      <span class="difficulty diff-medium">★★☆ Medium</span>
+    </div>
+    <div class="hw-desc">Write <code>gym_attendance(*members)</code>. It should print the total number of members who showed up today, list each member's name, and print whether the class is "Full" (≥ 10 members) or "Available".</div>
+    <div class="hw-io">
+      <div class="hw-io-box">
+        <div class="hw-io-label inp">▶ Expected Calls</div>
+        <div class="hw-io-val">gym_attendance("Riya", "Arjun",<br>&nbsp;&nbsp;"Priya", "Karan")<br><br>gym_attendance("A","B","C","D",<br>&nbsp;&nbsp;"E","F","G","H","I","J","K")</div>
+      </div>
+      <div class="hw-io-box">
+        <div class="hw-io-label out">◀ Expected Output</div>
+        <div class="hw-io-val">Today's Attendance: 4<br>Members: Riya, Arjun, Priya, Karan<br>Status: Available<br>──────────────────────────────<br>Today's Attendance: 11<br>Members: A, B, C, D, E, F, G, H, I, J, K<br>Status: Full</div>
+      </div>
+    </div>
+    <div class="hw-tags">
+      <span class="hw-tag" style="background:rgba(124,58,237,.2);color:#C4B5FD;">*args</span>
+    </div>
+    <div class="hw-tip">💡 Tip: Use <code>len(members)</code> to count, <code>", ".join(members)</code> to display the list.</div>
+  </div>
+
+  <!-- HW 5 -->
+  <div class="hw-card">
+    <div class="hw-head">
+      <div>
+        <div class="hw-number">Problem 05 · **kwargs</div>
+        <div class="hw-title">🛍️ Online Product Listing</div>
+      </div>
+      <span class="difficulty diff-medium">★★☆ Medium</span>
+    </div>
+    <div class="hw-desc">Write <code>list_product(product_name, price, **specs)</code>. A product always has a name and price, but specs vary widely — electronics have RAM and storage, clothes have size and colour, food has weight and expiry. Print all details neatly.</div>
+    <div class="hw-io">
+      <div class="hw-io-box">
+        <div class="hw-io-label inp">▶ Expected Calls</div>
+        <div class="hw-io-val">list_product("Laptop", 65000,<br>&nbsp;&nbsp;brand="Dell", ram="16GB",<br>&nbsp;&nbsp;storage="512GB SSD")<br><br>list_product("T-Shirt", 799,<br>&nbsp;&nbsp;colour="Navy", size="L",<br>&nbsp;&nbsp;material="Cotton")</div>
+      </div>
+      <div class="hw-io-box">
+        <div class="hw-io-label out">◀ Expected Output</div>
+        <div class="hw-io-val">📦 Laptop — ¥65,000<br>&nbsp;&nbsp;Brand    : Dell<br>&nbsp;&nbsp;Ram      : 16GB<br>&nbsp;&nbsp;Storage  : 512GB SSD<br>──────────────────────<br>📦 T-Shirt — ¥799<br>&nbsp;&nbsp;Colour   : Navy<br>&nbsp;&nbsp;Size     : L<br>&nbsp;&nbsp;Material : Cotton</div>
+      </div>
+    </div>
+    <div class="hw-tags">
+      <span class="hw-tag" style="background:rgba(219,39,119,.2);color:#F9A8D4;">**kwargs</span>
+    </div>
+    <div class="hw-tip">💡 Tip: Loop over <code>specs.items()</code> and use <code>.title()</code> on the key for capitalised labels. Use <code>f"¥{price:,}"</code> for formatted prices.</div>
+  </div>
+
+  <!-- HW 6 -->
+  <div class="hw-card">
+    <div class="hw-head">
+      <div>
+        <div class="hw-number">Problem 06 · Return Values</div>
+        <div class="hw-title">⚡ Electricity Bill — Slab System</div>
+      </div>
+      <span class="difficulty diff-medium">★★☆ Medium</span>
+    </div>
+    <div class="hw-desc">Write <code>electricity_bill(units)</code> that <strong>returns</strong> the bill amount using India's slab system: 0–100 units @ ¥3/unit; 101–300 @ ¥5/unit; above 300 @ ¥7/unit. The returned value should be used to print the final bill separately — do not print inside the function.</div>
+    <div class="hw-io">
+      <div class="hw-io-box">
+        <div class="hw-io-label inp">▶ Expected Calls</div>
+        <div class="hw-io-val">bill = electricity_bill(80)<br>print(f"Bill: ¥{bill}")<br><br>bill = electricity_bill(200)<br>print(f"Bill: ¥{bill}")<br><br>bill = electricity_bill(450)<br>print(f"Bill: ¥{bill}")</div>
+      </div>
+      <div class="hw-io-box">
+        <div class="hw-io-label out">◀ Expected Output</div>
+        <div class="hw-io-val">Bill: ¥240<br><br>Bill: ¥800<br><br>Bill: ¥2350</div>
+      </div>
+    </div>
+    <div class="hw-tags">
+      <span class="hw-tag" style="background:rgba(220,38,38,.2);color:#FCA5A5;">Return Values</span>
+    </div>
+    <div class="hw-tip">💡 Tip: Calculation for 200 units → first 100 × ¥3 = ¥300, next 100 × ¥5 = ¥500, total ¥800. For 450 → (100×3) + (200×5) + (150×7) = 300+1000+1050 = ¥2350.</div>
+  </div>
+
+  <!-- HW 7 HARD -->
+  <div class="hw-card">
+    <div class="hw-head">
+      <div>
+        <div class="hw-number">Problem 07 · Mixed Concepts — Bonus Challenge</div>
+        <div class="hw-title">🏪 Mini Supermarket Billing System</div>
+      </div>
+      <span class="difficulty diff-hard">★★★ Hard</span>
+    </div>
+    <div class="hw-desc">Build a complete billing function: <code>supermarket_bill(customer_name, *items, discount=0, **extras)</code>. Each item in <code>*items</code> is a tuple of <code>(name, price)</code>. Apply the discount percentage. <code>**extras</code> may include <code>loyalty_points</code> (add ¥1 per point as discount) and <code>gift_wrap</code> (add ¥50 charge). Return the final total. Print the bill using the returned value.</div>
+    <div class="hw-io">
+      <div class="hw-io-box">
+        <div class="hw-io-label inp">▶ Expected Call</div>
+        <div class="hw-io-val">total = supermarket_bill(<br>&nbsp;&nbsp;"Meena",<br>&nbsp;&nbsp;("Milk 1L", 65),<br>&nbsp;&nbsp;("Bread", 45),<br>&nbsp;&nbsp;("Eggs 12pk", 90),<br>&nbsp;&nbsp;discount=10,<br>&nbsp;&nbsp;loyalty_points=20,<br>&nbsp;&nbsp;gift_wrap=True<br>)<br>print(f"You pay: ¥{total}")</div>
+      </div>
+      <div class="hw-io-box">
+        <div class="hw-io-label out">◀ Expected Output</div>
+        <div class="hw-io-val">Customer : Meena<br>── Items ──<br>&nbsp;&nbsp;Milk 1L      ¥65<br>&nbsp;&nbsp;Bread        ¥45<br>&nbsp;&nbsp;Eggs 12pk    ¥90<br>Subtotal      : ¥200<br>Discount (10%): -¥20<br>Loyalty pts 20: -¥20<br>Gift wrap     : +¥50<br>──────────────────<br>You pay: ¥210</div>
+      </div>
+    </div>
+    <div class="hw-tags">
+      <span class="hw-tag" style="background:rgba(37,99,235,.2);color:#93C5FD;">Normal Fn</span>
+      <span class="hw-tag" style="background:rgba(124,58,237,.2);color:#C4B5FD;">*args</span>
+      <span class="hw-tag" style="background:rgba(217,119,6,.2);color:#FCD34D;">Default</span>
+      <span class="hw-tag" style="background:rgba(219,39,119,.2);color:#F9A8D4;">**kwargs</span>
+      <span class="hw-tag" style="background:rgba(220,38,38,.2);color:#FCA5A5;">Return</span>
+    </div>
+    <div class="hw-tip">💡 Tip: Process in this order — (1) sum items, (2) subtract discount, (3) subtract loyalty points from extras, (4) add gift wrap charge if present, (5) return the final number. Don't print inside the function!</div>
+  </div>
+
+</div><!-- /hw-section -->
+
+</div><!-- /wrap -->
+
+<script>
+// Highlight active nav link on scroll
+const chapters = document.querySelectorAll('.chapter, .hw-section');
+const navLinks = document.querySelectorAll('.topnav a[href^="#"]');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.style.borderBottomWidth = '');
+      const id = e.target.id;
+      const link = document.querySelector(`.topnav a[href="#${id}"]`);
+      if (link) link.style.borderBottomWidth = '2px';
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+chapters.forEach(c => observer.observe(c));
+</script>
+</body>
+</html>
