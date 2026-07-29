@@ -6,7 +6,7 @@ n=2
 # y=1
 # z=2
 # n=3
-# n=solved
+# n=solveing
 all_list=[]
 new_list=[]
 for i in range(x+1):
