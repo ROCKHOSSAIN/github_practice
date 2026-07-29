@@ -9,6 +9,8 @@ lst = sorted(list_student, key=lambda l: l[1], reverse=None)
 # lst=sorted(list_student,key=lambda l:l[1],reverse=None)
 # for i,s in enumerate(lst):
 #     print(s[i])
+#     change
+
 for i in range(len(lst)+1):
     print(i[-2])
     print(i[1])
